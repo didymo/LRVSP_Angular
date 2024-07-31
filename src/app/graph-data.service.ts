@@ -3,9 +3,9 @@ import {HttpClient} from "@angular/common/http";
 import {DrupalDoc} from "./drupal-doc";
 import {asap, combineLatest, concatAll, map, mergeAll, mergeMap, of, tap, toArray} from "rxjs";
 import {DrupalLinkResult} from "./drupal-link";
-import {merge} from "rxjs/internal/operators/merge";
-import {link} from "d3";
 import {GraphicalNode} from "./simulation-node";
+import { environment } from '../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class GraphDataService {
   }
 
   getAllDocuments() {
-    return this.http.get<DrupalDoc[]>("http://api.lrvs.local/docs")
+    return this.http.get<DrupalDoc[]>(`${environment.apiUrl}/${environment.apiEndpoints.allDocs}`)
       .pipe(
         concatAll(),
         map((doc): GraphicalNode => {
@@ -34,7 +34,7 @@ export class GraphDataService {
         mergeMap(result => {
           return combineLatest([
             of(result),
-            this.http.get<DrupalLinkResult>(`http://api.lrvs.local/links/${result.nodeId}`).pipe(
+            this.http.get<DrupalLinkResult>(`${environment.apiUrl}/${environment.apiEndpoints.linksForDoc}/${result.nodeId}`).pipe(
               mergeMap((linksResult) => {
                 return linksResult.links;
               }),
