@@ -1,0 +1,42 @@
+<svg attr.viewBox="{{svgCenter[0] - svgSize[0]/2}}, {{svgCenter[1] - svgSize[1]/2}} {{svgSize[0]}} {{svgSize[1]}}"
+  (wheel)="zoom($event)"
+  (mousedown)="canvasDown($event)"
+  (mouseup)="canvasUp($event)"
+  (mousemove)="canvasDrag($event)"
+   #canvas
+>
+  <defs>
+    <!-- A marker to be used as an arrowhead -->
+    <marker
+      id="arrow"
+      viewBox="0 0 10 10"
+      refX="5"
+      refY="5"
+      markerWidth="10"
+      markerHeight="10"
+      orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <g id="links">
+    <line *ngFor="let link of links; index as i"
+          [attr.x1]="link.source.x + nodeSize/2 + linkEndOffset(link)[0]" [attr.y1]="link.source.y + nodeSize/2 + linkEndOffset(link)[1]"
+          [attr.x2]="link.target.x + nodeSize/2 - linkEndOffset(link)[0]" [attr.y2]="link.target.y + nodeSize/2 - linkEndOffset(link)[1]"
+          marker-end="url(#arrow)"
+          stroke="black"
+    />
+  </g>
+  <g id="nodes">
+    <svg *ngFor="let node of nodes; index as i" [attr.x]="node.x" [attr.y]="node.y"
+         attr.viewBox="{{-nodeSize/2}} {{-nodeSize/2}} {{nodeSize}} {{nodeSize}}"
+         overflow="visible"
+         attr.width="{{nodeSize}}" attr.height="{{nodeSize}}"
+         (mousedown)="nodeDown($event, node)"
+         class="node"
+    >
+      <circle r="50%" cx="0" cy="0" attr.stroke="{{primaryNodes.includes(node) ? 'red' : 'black'}}" fill="white"/>
+      <text font-size="7" text-anchor="middle" dominant-baseline="central">{{node.nodeTitle}}</text>
+    </svg>
+<!--    <circle r="5px" [attr.cx]="testLoc.x" [attr.cy]="testLoc.y" fill="black" />-->
+  </g>
+</svg>

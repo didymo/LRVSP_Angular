@@ -1,0 +1,6 @@
+<select [(ngModel)]="selectedValue">
+  <option
+    *ngFor="let option of options"
+    [ngValue]="option"
+  >{{option.nodeTitle}}</option>
+</select>
