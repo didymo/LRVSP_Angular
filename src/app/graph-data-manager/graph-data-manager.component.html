@@ -1,0 +1,4 @@
+<app-graph-data-selector [options]="nodes" (selectedOption)="dropDownSelect($event)"/>
+<app-graph-data-display (nodeSelected)="nodeSelected($event)"/>
+<!--<app-graph-data-display/>-->
+<app-graph-data-detail [node]="detailNode" (explore)="displayComponent.addNode($event)" (unexplore)="displayComponent.removeNode($event)"/>
