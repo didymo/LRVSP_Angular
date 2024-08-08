@@ -1,0 +1,63 @@
+<svg attr.viewBox="{{svgCenter[0] - svgSize[0]/2}}, {{svgCenter[1] - svgSize[1]/2}} {{svgSize[0]}} {{svgSize[1]}}"
+  (wheel)="zoom($event)"
+  (mousedown)="canvasDown($event)"
+  (mouseup)="canvasUp($event)"
+  (mousemove)="canvasDrag($event)"
+   #canvas
+  preserveAspectRatio="xMidYMid slice"
+>
+  <defs>
+    <!-- A marker to be used as an arrowhead -->
+    <marker
+      id="arrow"
+      viewBox="0 0 10 10"
+      refX="5"
+      refY="5"
+      markerWidth="10"
+      markerHeight="10"
+      orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <!-- Because Angular doesn't like things douching the DOM, we pre-generate all the elements that D3 might need. Then, we let Angular handle linking the data (i.e. x, y, so on so forth) to the actual elements. -->
+  <g id="links">
+    <g *ngFor="let source of _rootNode?.flatten()">
+          <line *ngFor="let target of source.children; index as i"
+                [attr.x1]="coordsFromHierarchy(source.hierarchy!).x() + nodeSize/2"
+                [attr.y1]="coordsFromHierarchy(source.hierarchy!).y() + nodeSize/2"
+                [attr.x2]="polToCar(target.hierarchy!.y! - 64, target.hierarchy!.x!).x() + nodeSize/2"
+                [attr.y2]="polToCar(target.hierarchy!.y! - 64, target.hierarchy!.x!).y() + nodeSize/2"
+                marker-end="url(#arrow)"
+                stroke="black"
+          />
+    </g>
+  </g>
+  <g id="nodes">
+<!--    <circle r="20" *ngFor="let node of hierarchy"  stroke="black" />-->
+    <svg #nodes *ngFor="let node of _rootNode?.flatten(); index as i" [attr.x]="coordsFromHierarchy(node.hierarchy!).x()" [attr.y]="coordsFromHierarchy(node.hierarchy!).y()"
+         attr.viewBox="{{-nodeSize/2}} {{-nodeSize/2}} {{nodeSize}} {{nodeSize}}"
+         overflow="visible"
+         attr.width="{{nodeSize}}" attr.height="{{nodeSize}}"
+         class="node"
+    >
+      <path *ngIf="node.hierarchy?.y != 0" d="M-60,-4 H 0 a 4 4 0 0 1 0 8 H -60 a 4 4 0 0 1 0 -8 Z"
+            stroke="black" attr.fill="{{node.hover ? 'red' : 'white'}}"
+            (click)="pillClicked($event, node)"
+            (mouseover)="nodeHover($event, node)"
+            (mouseleave)="nodeLeave($event, node)"
+            attr.transform="rotate({{node.hierarchy?.x! * (180 / Math.PI)}})"/>
+      <path *ngIf="node.hierarchy?.y == 0"d="M-60,-4 H 0 a 4 4 0 0 1 0 8 H -60 a 4 4 0 0 1 0 -8 Z"
+            stroke="black" attr.fill="{{node.hover ? 'red' : 'white'}}"
+            (click)="pillClicked($event, node)"/>
+      <circle r="2.5" cx="0" cy="0" stroke="black" (mousedown)="nodeClick($event, node)"/>
+      <text *ngIf="node.hierarchy?.y != 0" attr.transform="rotate({{node.hierarchy?.x! * (180 / Math.PI)}})"
+            font-size="7" x="-7" text-anchor="end" dominant-baseline="central"
+            (click)="pillClicked($event, node)"
+            (mouseover)="nodeHover($event, node)"
+            (mouseleave)="nodeLeave($event, node)">{{node.hierarchy?.data?.document?.nodeTitle}}</text>
+      <text *ngIf="node.hierarchy?.y == 0" font-size="7" x="-7" text-anchor="end" dominant-baseline="central"
+            (click)="pillClicked($event, node)">{{node.hierarchy?.data?.document?.nodeTitle}}</text>
+    </svg>
+<!--    <circle r="5px" [attr.cx]="testLoc.x" [attr.cy]="testLoc.y" fill="black" />-->
+  </g>
+</svg>

@@ -4,6 +4,7 @@ import {GraphDataDisplayComponent} from "../graph-data-display/graph-data-displa
 import {GraphDataDetailComponent} from "../graph-data-detail/graph-data-detail.component";
 import {GraphicalNode} from "../simulation-node";
 import {GraphDataService} from "../graph-data.service";
+import {MatSidenavContainer, MatSidenavContent, MatSidenav} from "@angular/material/sidenav";
 
 @Component({
   selector: 'app-graph-data-manager',
@@ -11,7 +12,10 @@ import {GraphDataService} from "../graph-data.service";
   imports: [
     GraphDataSelectorComponent,
     GraphDataDisplayComponent,
-    GraphDataDetailComponent
+    GraphDataDetailComponent,
+    MatSidenavContent,
+    MatSidenavContainer,
+    MatSidenav
   ],
   templateUrl: './graph-data-manager.component.html',
   styleUrl: './graph-data-manager.component.scss'
@@ -27,7 +31,7 @@ export class GraphDataManagerComponent {
   }
 
   ngOnInit() {
-    this.graphDataService.getAllDocuments().subscribe((nodes) => {
+    this.graphDataService.getAllDocumentsForGraph().subscribe((nodes) => {
       this.nodes = nodes;
     })
   }
