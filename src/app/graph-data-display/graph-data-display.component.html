@@ -18,6 +18,7 @@
       <path d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
   </defs>
+  <!-- Because Angular doesn't like things douching the DOM, we pre-generate all the elements that D3 might need. Then, we let Angular handle linking the data (i.e. x, y, so on so forth) to the actual elements. -->
   <g id="links">
     <line *ngFor="let link of links; index as i"
           [attr.x1]="link.source.x + nodeSize/2 + linkEndOffset(link)[0]" [attr.y1]="link.source.y + nodeSize/2 + linkEndOffset(link)[1]"

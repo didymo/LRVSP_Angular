@@ -17,8 +17,11 @@ export class GraphDataSelectorComponent {
   @Input() options: GraphicalNode[] = []
   @Output() selectedOption = new EventEmitter<GraphicalNode>
 
-  _selectedValue: GraphicalNode | null = null
+  private _selectedValue: GraphicalNode | null = null
 
+  // Currently, this class is too simple to warrant any real level of bookkeeping (as shown here). However, at some
+  // point this component will be responsible for letting the user select how they want the graph filtered as well, so
+  // we need a little extra management for future proofing.
   get selectedValue(): GraphicalNode | null {
     return this._selectedValue
   }
