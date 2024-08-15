@@ -1,0 +1,22 @@
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    ServerName SERVER_NAME_HERE
+
+    # Should point to dist/${projectName}/broswer, or you should copy the result of `ng build` to this location
+    DocumentRoot DOCUMENT_ROOT_HERE
+
+    <Directory DOCUMENT_ROOT_HERE >
+        Require all granted
+        RewriteEngine on
+
+        # Don't rewrite files or directories
+        RewriteCond %{REQUEST_FILENAME} -f [OR]
+        RewriteCond %{REQUEST_FILENAME} -d
+        RewriteRule ^ - [L]
+
+        # Rewrite everything else to index.html
+        # to allow html5 state links
+        RewriteRule ^ index.html [L]
+    </Directory>
+
+</VirtualHost>
