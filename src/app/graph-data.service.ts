@@ -17,12 +17,12 @@ export class GraphDataService {
   constructor(private http: HttpClient) {
   }
 
-
-
   // DESIGNED TO WORK WITH didymo/LRVSP_DRUPAL:main#c333e85
   // A naiive approach that needs to be rewritten as we get more docs. Also needs to be rewritten because it's messy as all hell
   getAllDocumentsForGraph() {
-    return this.http.get<DrupalDoc[]>(`${environment.apiUrl}/${environment.apiEndpoints.allDocs}`)
+    // Need to use a url salt because the backend is caching oddly
+    let requestSalt = Math.random();
+    return this.http.get<DrupalDoc[]>(`${environment.apiUrl}/${environment.apiEndpoints.allDocs}?random_salt=${requestSalt}`)
       .pipe(
         // 1. Unpack array of Docs from Drupal backend
         concatAll(),
@@ -44,7 +44,7 @@ export class GraphDataService {
           //Combine latest let's us merge observables.
           return combineLatest([
             of(result),
-            this.http.get<DrupalLink[]>(`${environment.apiUrl}/${environment.apiEndpoints.linksForDoc}/${result.nodeId}`).pipe(
+            this.http.get<DrupalLink[]>(`${environment.apiUrl}/${environment.apiEndpoints.linksForDoc}/${result.nodeId}?random_salt=${requestSalt}`).pipe(
               // Unpack the array into the stream
               concatAll(),
               // grab the target from each link
@@ -87,7 +87,9 @@ export class GraphDataService {
   }
 
   getAllDocumentsForTree() {
-    return this.http.get<DrupalDoc[]>(`${environment.apiUrl}/${environment.apiEndpoints.allDocs}`)
+    // Need to use a url salt because the backend is caching oddly
+    let requestSalt = Math.random();
+    return this.http.get<DrupalDoc[]>(`${environment.apiUrl}/${environment.apiEndpoints.allDocs}?random_salt=${requestSalt}`)
       .pipe(
         concatAll(),
         map((doc) => {
@@ -97,7 +99,7 @@ export class GraphDataService {
           //Combine latest let's us merge observables.
           return combineLatest([
             of(result),
-            this.http.get<DrupalLink[]>(`${environment.apiUrl}/${environment.apiEndpoints.linksForDoc}/${result.nodeId}`).pipe(
+            this.http.get<DrupalLink[]>(`${environment.apiUrl}/${environment.apiEndpoints.linksForDoc}/${result.nodeId}?random_salt=${requestSalt}`).pipe(
               // Unpack the array into the stream
               concatAll(),
               // grab the target from each link
