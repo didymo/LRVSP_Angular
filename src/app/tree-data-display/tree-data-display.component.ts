@@ -104,17 +104,19 @@ export class TreeDataDisplayComponent {
   pillClicked(event: MouseEvent, node: TreeNode) {
     this.nodeSelected.emit(node)
     this.rollToNode(node)
-    console.log(node.hierarchy?.x, node.hierarchy?.y)
   }
 
   getNodeRotation(node: TreeNode): number {
     let retval;
+    // The center node should always be horizontal
     if (node.hierarchy?.y == 0) {
       retval = 0;
     }
     else {
       retval = node.hierarchy?.x! * (180 / Math.PI) + this.angleOffset
     }
+
+    // Keep the return in range (0, 360)
     while (retval < 0) {
       retval += 360
     }
@@ -136,15 +138,22 @@ export class TreeDataDisplayComponent {
     node.hover = false
   }
 
+  // D3 trees and hierarchies can't be modified after creation, so we need to tear down our existing hierarchies and rebuild them when a node is expanded.
+  // In a normal situation, we wouldn't need to do this, because the data would be static.
+  // Out data is generated from a graph, so attempting to present the entire tree would cause an infinite cascade.
   private buildTree() {
     this.hierarchy = d3.hierarchy(this._rootNode!)
+    // Link each TreeNode to it's d3 hierarchy - TreeNodes are used by us to keep track of the placement of documents in the tree, hierarchies are used by D3 for the same purpose.
+    // The way we do things is technically incompatible with D3, so we do this to sort of shim the two systems together.
     this.hierarchy.descendants().forEach((descendant) => {
       descendant.data.hierarchy = descendant;
     })
+    // Tell D3 the space it has to place the tree within. We're doing a radial tree, so we go from 0 to 2PI in width
     this.treeLayout.size([Math.PI * 2, this.svgRingRadius * this.hierarchy.height])
     this.treeLayout.separation((a, b) => {
       return (a.parent == b.parent ? 1 : 2) / a.depth;
     })
+    // Finally, tell the layout which data it's supposed to use.
     this.treeLayout(this.hierarchy)
   }
 
