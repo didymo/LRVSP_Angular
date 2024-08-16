@@ -18,46 +18,37 @@
       orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
+    <path d="M-60,0 H 0" stroke="red" id="textpath"></path>
+    <path d="M-4,0 H -60" stroke="red" id="revtextpath"></path>
   </defs>
-  <!-- Because Angular doesn't like things douching the DOM, we pre-generate all the elements that D3 might need. Then, we let Angular handle linking the data (i.e. x, y, so on so forth) to the actual elements. -->
+  <!-- Because Angular doesn't like things touching the DOM, we pre-generate all the elements that D3 might need. Then, we let Angular handle linking the data (i.e. x, y, so on so forth) to the actual elements. -->
   <g id="links">
     <g *ngFor="let source of _rootNode?.flatten()">
-          <line *ngFor="let target of source.children; index as i"
-                [attr.x1]="coordsFromHierarchy(source.hierarchy!).x() + nodeSize/2"
-                [attr.y1]="coordsFromHierarchy(source.hierarchy!).y() + nodeSize/2"
-                [attr.x2]="polToCar(target.hierarchy!.y! - 64, target.hierarchy!.x!).x() + nodeSize/2"
-                [attr.y2]="polToCar(target.hierarchy!.y! - 64, target.hierarchy!.x!).y() + nodeSize/2"
-                marker-end="url(#arrow)"
-                stroke="black"
-          />
+      <path *ngFor="let target of source.children; index as i" attr.d="{{generateLinkPath(source, target)}}" stroke="black" fill="none" marker-end="url(#arrow)"></path>
     </g>
   </g>
   <g id="nodes">
-<!--    <circle r="20" *ngFor="let node of hierarchy"  stroke="black" />-->
-    <svg #nodes *ngFor="let node of _rootNode?.flatten(); index as i" [attr.x]="coordsFromHierarchy(node.hierarchy!).x()" [attr.y]="coordsFromHierarchy(node.hierarchy!).y()"
-         attr.viewBox="{{-nodeSize/2}} {{-nodeSize/2}} {{nodeSize}} {{nodeSize}}"
+    <circle attr.r="{{svgRingRadius}}" stroke="black" fill="none"/>
+    <svg #nodes *ngFor="let node of _rootNode?.flatten(); index as i"
+         attr.viewBox="0 0 {{nodeSize}} {{nodeSize}}"
          overflow="visible"
          attr.width="{{nodeSize}}" attr.height="{{nodeSize}}"
          class="node"
+         attr.transform="rotate({{getNodeRotation(node)}})translate({{node.hierarchy?.y}}, 0)"
     >
-      <path *ngIf="node.hierarchy?.y != 0" d="M-60,-4 H 0 a 4 4 0 0 1 0 8 H -60 a 4 4 0 0 1 0 -8 Z"
+      <path attr.d="M{{-svgPillLength}},{{-svgPillRadius}} H 0 a {{svgPillRadius}} {{svgPillRadius}} 0 0 1 0 {{2 * svgPillRadius}} H {{-svgPillLength}} a {{svgPillRadius}} {{svgPillRadius}} 0 0 1 0 {{-svgPillRadius * 2}} Z"
             stroke="black" attr.fill="{{node.hover ? 'red' : 'white'}}"
             (click)="pillClicked($event, node)"
             (mouseover)="nodeHover($event, node)"
-            (mouseleave)="nodeLeave($event, node)"
-            attr.transform="rotate({{node.hierarchy?.x! * (180 / Math.PI)}})"/>
-      <path *ngIf="node.hierarchy?.y == 0"d="M-60,-4 H 0 a 4 4 0 0 1 0 8 H -60 a 4 4 0 0 1 0 -8 Z"
-            stroke="black" attr.fill="{{node.hover ? 'red' : 'white'}}"
-            (click)="pillClicked($event, node)"/>
-      <circle r="2.5" cx="0" cy="0" stroke="black" (mousedown)="nodeClick($event, node)"/>
-      <text *ngIf="node.hierarchy?.y != 0" attr.transform="rotate({{node.hierarchy?.x! * (180 / Math.PI)}})"
-            font-size="7" x="-7" text-anchor="end" dominant-baseline="central"
+            (mouseleave)="nodeLeave($event, node)"/>
+      <circle attr.r="{{svgPillRadius/2}}" cx="0" cy="0" stroke="black" (mousedown)="nodeClick($event, node)"/>
+      <text font-size="7" dominant-baseline="central"
             (click)="pillClicked($event, node)"
             (mouseover)="nodeHover($event, node)"
-            (mouseleave)="nodeLeave($event, node)">{{node.hierarchy?.data?.document?.nodeTitle}}</text>
-      <text *ngIf="node.hierarchy?.y == 0" font-size="7" x="-7" text-anchor="end" dominant-baseline="central"
-            (click)="pillClicked($event, node)">{{node.hierarchy?.data?.document?.nodeTitle}}</text>
+            (mouseleave)="nodeLeave($event, node)">
+        <textPath *ngIf="getNodeRotation(node)  <= 90 || getNodeRotation(node) >= 270" href="#textpath" >{{node.hierarchy?.data?.document?.nodeTitle}}</textPath>
+        <textPath *ngIf="getNodeRotation(node)  > 90 && getNodeRotation(node) < 270" href="#revtextpath" >{{node.hierarchy?.data?.document?.nodeTitle}}</textPath>
+      </text>
     </svg>
-<!--    <circle r="5px" [attr.cx]="testLoc.x" [attr.cy]="testLoc.y" fill="black" />-->
   </g>
 </svg>

@@ -22,7 +22,7 @@ export class TreeDataDisplayComponent {
   protected hierarchy: d3.HierarchyNode<TreeNode> | undefined
   private treeLayout: d3.TreeLayout<TreeNode> = d3.tree()
 
-  private angleOffset = 0;
+  protected angleOffset: number = 0;
 
   @ViewChildren('nodes') children?: QueryList<ElementRef<SVGGraphicsElement>>;
 
@@ -30,6 +30,9 @@ export class TreeDataDisplayComponent {
   protected nodeSize = 50;
   protected svgCenter = [0, 0];
   protected svgScale = 1
+  protected svgRingRadius = 200;
+  protected svgPillRadius = 4;
+  protected svgPillLength = 60;
   protected get svgSize() {
     return [this.svgScale * 1000, this.svgScale *1000]
   }
@@ -42,15 +45,7 @@ export class TreeDataDisplayComponent {
   set rootNode(newRoot: TreeNode) {
     this._rootNode = newRoot;
     this._rootNode.expand()
-    this.hierarchy = d3.hierarchy(this._rootNode)
-    this.hierarchy.descendants().forEach((descendant) => {
-      descendant.data.hierarchy = descendant;
-    })
-    this.treeLayout.size([Math.PI * 2, 200 * this.hierarchy.height])
-    this.treeLayout.separation((a, b) => {
-      return (a.parent == b.parent ? 1 : 2) / a.depth;
-    })
-    this.treeLayout(this.hierarchy)
+    this.buildTree();
   }
 
   zoom(event: WheelEvent) {
@@ -100,38 +95,37 @@ export class TreeDataDisplayComponent {
     return this.domPoint.matrixTransform(inverseMatrix)
   }
 
-  protected readonly Math = Math;
-
   nodeClick(event: MouseEvent, node: TreeNode) {
     node.toggleExpanded()
-    this.hierarchy = d3.hierarchy(this._rootNode!)
-    this.hierarchy.descendants().forEach((descendant) => {
-      descendant.data.hierarchy = descendant;
-    })
-    this.treeLayout.size([Math.PI * 2, 200 * this.hierarchy.height])
-    this.treeLayout.separation((a, b) => {
-      return (a.parent == b.parent ? 1 : 2) / a.depth;
-    })
-    this.treeLayout(this.hierarchy)
+    this.buildTree()
+    this.rollToNode(node)
   }
 
   pillClicked(event: MouseEvent, node: TreeNode) {
     this.nodeSelected.emit(node)
+    this.rollToNode(node)
+    console.log(node.hierarchy?.x, node.hierarchy?.y)
   }
 
-  coordsFromHierarchy(hierarchy: d3.HierarchyNode<TreeNode>): {x: () => number, y: () => number} {
-    return this.polToCar(hierarchy.y!, hierarchy.x! + this.angleOffset)
-  }
-
-  polToCar(radius: number, angle: number) : {x: () => number, y: () => number} {
-    return {
-      x: () => radius * Math.cos(angle),
-      y: () => radius * Math.sin(angle),
+  getNodeRotation(node: TreeNode): number {
+    let retval;
+    if (node.hierarchy?.y == 0) {
+      retval = 0;
     }
+    else {
+      retval = node.hierarchy?.x! * (180 / Math.PI) + this.angleOffset
+    }
+    while (retval < 0) {
+      retval += 360
+    }
+    while (retval > 360) {
+      retval -= 360
+    }
+    return retval
   }
 
   rollToNode($event: TreeNode) {
-    this.angleOffset = -$event.hierarchy!.x!
+    this.angleOffset = -this.getNodeRotation($event) + this.angleOffset
   }
 
   nodeHover($event: MouseEvent, node: TreeNode) {
@@ -140,5 +134,33 @@ export class TreeDataDisplayComponent {
 
   nodeLeave($event: MouseEvent, node: TreeNode) {
     node.hover = false
+  }
+
+  private buildTree() {
+    this.hierarchy = d3.hierarchy(this._rootNode!)
+    this.hierarchy.descendants().forEach((descendant) => {
+      descendant.data.hierarchy = descendant;
+    })
+    this.treeLayout.size([Math.PI * 2, this.svgRingRadius * this.hierarchy.height])
+    this.treeLayout.separation((a, b) => {
+      return (a.parent == b.parent ? 1 : 2) / a.depth;
+    })
+    this.treeLayout(this.hierarchy)
+  }
+
+  polToCart(radius: number, angle_degrees: number): {x: () => number, y: () => number } {
+    return {
+      x: () => radius * Math.cos(angle_degrees * Math.PI / 180),
+      y: () => radius * Math.sin(angle_degrees * Math.PI / 180)
+    }
+  }
+
+  generateLinkPath(source: TreeNode, target: TreeNode): string {
+    let startCoord = this.polToCart(source.hierarchy!.y! + this.svgPillRadius, this.getNodeRotation(source))
+    let ctrlStart = this.polToCart(source.hierarchy!.y! + this.svgPillRadius + this.svgRingRadius / 4, this.getNodeRotation(source))
+    let ctrlEnd = this.polToCart(target.hierarchy!.y! - this.svgPillLength - this.svgPillRadius - this.svgRingRadius / 4, this.getNodeRotation(target))
+    let endCoord = this.polToCart(target.hierarchy!.y! - this.svgPillLength - this.svgPillRadius, this.getNodeRotation(target))
+    return `M ${startCoord.x()} ${startCoord.y()} C ${ctrlStart.x()} ${ctrlStart.y()} ${ctrlEnd.x()} ${ctrlEnd.y()} ${endCoord.x()} ${endCoord.y()}`
+    // return `M ${startCoord.x()} ${startCoord.y()} L ${ctrlStart.x()} ${ctrlStart.y()} ${ctrlEnd.x()} ${ctrlEnd.y()} ${endCoord.x()} ${endCoord.y()}`
   }
 }
