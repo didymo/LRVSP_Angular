@@ -6,6 +6,7 @@ import {DrupalLink, DrupalLinkResult} from "./drupal-link";
 import {GraphicalNode} from "./simulation-node";
 import { environment } from '../environments/environment';
 import {TreeDocument} from "./tree-document";
+import {bin} from "d3";
 
 
 @Injectable({
@@ -16,6 +17,22 @@ export class GraphDataService {
 
   constructor(private http: HttpClient) {
   }
+
+  // Workaround for Javascript's ancient b64 decode.
+  // See https://developer.mozilla.org/en-US/docs/Glossary/Base64#the_unicode_problem
+  b64DecodeUTF8(b64String: string): string {
+    const binString = atob(b64String);
+    const uintArray = Uint8Array.from(binString, (m) => m.codePointAt(0)!)
+    return new TextDecoder().decode(uintArray)
+  }
+
+  // Workaround for Javascript's ancient b64 encode. Added now because it's almost certain that we're going to need it
+  b64EncodeUTF8(data: string): string {
+    const uintArray = new TextEncoder().encode(data)
+    const binString = Array.from(uintArray, (byte) => String.fromCodePoint(byte)).join("");
+    return btoa(binString)
+  }
+
 
   // DESIGNED TO WORK WITH didymo/LRVSP_DRUPAL:main#c333e85
   // A naiive approach that needs to be rewritten as we get more docs. Also needs to be rewritten because it's messy as all hell
@@ -34,7 +51,7 @@ export class GraphDataService {
             fy: null,
             fixed: false,
             nodeId: doc.id,
-            nodeTitle: atob(doc.title),                 // Doc titles are base64 encoded strings
+            nodeTitle: this.b64DecodeUTF8(doc.title),                 // Doc titles are base64 encoded strings
             linksTo: []
           }
         }),
@@ -93,7 +110,7 @@ export class GraphDataService {
       .pipe(
         concatAll(),
         map((doc) => {
-          return new TreeDocument(doc.id, atob(doc.title))
+          return new TreeDocument(doc.id, this.b64DecodeUTF8(doc.title))
         }),
         mergeMap(result => {
           //Combine latest let's us merge observables.
