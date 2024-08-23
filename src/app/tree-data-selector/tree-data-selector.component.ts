@@ -3,9 +3,10 @@ import {GraphicalNode} from "../simulation-node";
 import {NgForOf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {MatOption, MatSelect} from "@angular/material/select";
+import {TreeDocument} from "../tree-document";
 
 @Component({
-  selector: 'app-graph-data-selector',
+  selector: 'app-tree-data-selector',
   standalone: true,
   imports: [
     NgForOf,
@@ -13,23 +14,23 @@ import {MatOption, MatSelect} from "@angular/material/select";
     MatSelect,
     MatOption
   ],
-  templateUrl: './graph-data-selector.component.html',
-  styleUrl: './graph-data-selector.component.scss'
+  templateUrl: './tree-data-selector.component.html',
+  styleUrl: './tree-data-selector.component.scss'
 })
-export class GraphDataSelectorComponent {
-  @Input() options: GraphicalNode[] = []
-  @Output() selectedOption = new EventEmitter<GraphicalNode>
+export class TreeDataSelectorComponent {
+  @Input() options: TreeDocument[] = []
+  @Output() selectedOption = new EventEmitter<TreeDocument>
 
-  private _selectedValue: GraphicalNode | null = null
+  private _selectedValue: TreeDocument | null = null
 
   // Currently, this class is too simple to warrant any real level of bookkeeping (as shown here). However, at some
   // point this component will be responsible for letting the user select how they want the graph filtered as well, so
   // we need a little extra management for future proofing.
-  get selectedValue(): GraphicalNode | null {
+  get selectedValue(): TreeDocument | null {
     return this._selectedValue
   }
 
-  set selectedValue(newVal: GraphicalNode) {
+  set selectedValue(newVal: TreeDocument) {
     this._selectedValue = newVal
     this.selectedOption.emit(newVal)
   }

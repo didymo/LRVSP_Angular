@@ -4,7 +4,7 @@ import {GraphDataDisplayComponent} from "../graph-data-display/graph-data-displa
 import {GraphDataDetailComponent} from "../graph-data-detail/graph-data-detail.component";
 import {GraphicalNode} from "../simulation-node";
 import {GraphDataService} from "../graph-data.service";
-import {Data} from "@angular/router";
+import {MatSidenavContainer, MatSidenavContent, MatSidenav} from "@angular/material/sidenav";
 
 @Component({
   selector: 'app-graph-data-manager',
@@ -12,7 +12,10 @@ import {Data} from "@angular/router";
   imports: [
     GraphDataSelectorComponent,
     GraphDataDisplayComponent,
-    GraphDataDetailComponent
+    GraphDataDetailComponent,
+    MatSidenavContent,
+    MatSidenavContainer,
+    MatSidenav
   ],
   templateUrl: './graph-data-manager.component.html',
   styleUrl: './graph-data-manager.component.scss'
@@ -28,11 +31,14 @@ export class GraphDataManagerComponent {
   }
 
   ngOnInit() {
-    this.graphDataService.getAllDocuments().subscribe((nodes) => {
+    this.graphDataService.getAllDocumentsForGraph().subscribe((nodes) => {
       this.nodes = nodes;
     })
   }
 
+  // This method needs to be cleaned up - it's a vestige of when some visibility management happened in this component
+  // as opposed to in the GraphDataDisplay component. We should really just let the displayComponent decide what happens
+  // with duplicate nodes.
   makeVisible(node: GraphicalNode) {
     if (!this.visibleNodes.includes(node)) {
       this.visibleNodes.push(node)
@@ -41,7 +47,9 @@ export class GraphDataManagerComponent {
 
   }
 
+  // Fired when the user makes a selection in GraphDataSelector
   dropDownSelect(event: GraphicalNode) {
+    //Reset the fixed state of all nodes of interest - we're starting over.
     for (let node of this.nodes) {
       node.fixed = false
       node.fx = null

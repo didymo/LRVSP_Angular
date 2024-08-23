@@ -1,7 +1,7 @@
 <mat-sidenav-container hasBackdrop="false">
   <mat-sidenav opened="true" #selectorSidebar>
     <div class="sidenavFlexbox">
-      <app-graph-data-selector [options]="nodes" (selectedOption)="dropDownSelect($event)"/>
+      <app-tree-data-selector [options]="nodes" (selectedOption)="dropDownSelect($event)"/>
       <div class="sidenavActivator" (click)="selectorSidebar.close()">
         <span>&lt;</span>
       </div>
@@ -12,14 +12,14 @@
       <div class="sidenavActivator" (click)="detailSidebar.close()">
         <span>&gt;</span>
       </div>
-      <app-graph-data-detail [node]="detailNode" (explore)="displayComponent.addNode($event)" (unexplore)="displayComponent.removeNode($event)"/>
+      <app-tree-data-detail [node]="detailNode" (roll)="rollToNode($event)"/>
     </div>
   </mat-sidenav>
   <mat-sidenav-content>
     <div class="sidenavActivator" (click)="selectorSidebar.open()">
       <span>&gt;</span>
     </div>
-    <app-graph-data-display (nodeSelected)="nodeSelected($event)"/>
+    <app-tree-data-display (nodeSelected)="nodeSelected($event)"/>
     <div class="sidenavActivator" (click)="detailSidebar.open()">
       <span>&lt;</span>
     </div>
