@@ -3,7 +3,9 @@ import {NgForOf, NgIf} from "@angular/common";
 import * as d3 from 'd3';
 import {GraphicalNode} from "../simulation-node";
 import {TreeNode} from "../tree-node";
-import {hierarchy, HierarchyNode} from "d3";
+import {hierarchy, HierarchyNode, some} from "d3";
+import {GraphDocument} from "../graph-document";
+import {MatTooltip} from "@angular/material/tooltip";
 
 
 // The GraphDataDisplay component is designed to provide a simple way of displaying document nodes
@@ -12,7 +14,8 @@ import {hierarchy, HierarchyNode} from "d3";
   standalone: true,
   imports: [
     NgForOf,
-    NgIf
+    NgIf,
+    MatTooltip
   ],
   templateUrl: './tree-data-display.component.html',
   styleUrl: './tree-data-display.component.scss'
@@ -27,7 +30,6 @@ export class TreeDataDisplayComponent {
   @ViewChildren('nodes') children?: QueryList<ElementRef<SVGGraphicsElement>>;
 
   //Details controlling the display of nodes in the .html file for GraphDataDisplay
-  protected nodeSize = 50;
   protected svgCenter = [0, 0];
   protected svgScale = 1
   protected svgRingRadius = 200;
@@ -36,6 +38,7 @@ export class TreeDataDisplayComponent {
   protected get svgSize() {
     return [this.svgScale * 1000, this.svgScale *1000]
   }
+  protected linkGenerator = d3.linkRadial()
 
   @Output() nodeSelected = new EventEmitter<TreeNode>
 
@@ -148,11 +151,33 @@ export class TreeDataDisplayComponent {
     this.hierarchy.descendants().forEach((descendant) => {
       descendant.data.hierarchy = descendant;
     })
-    // Tell D3 the space it has to place the tree within. We're doing a radial tree, so we go from 0 to 2PI in width
-    this.treeLayout.size([Math.PI * 2, this.svgRingRadius * this.hierarchy.height])
+
+    // Tell D3 how far apart we want our nodes to be
     this.treeLayout.separation((a, b) => {
       return (a.parent == b.parent ? 1 : 2) / a.depth;
     })
+
+    // Estimate how large the inner ring needs to be to comfortably fit all the nodes.
+    this.svgRingRadius = 200
+    // The following two metrics are technically not comparable - one is a perimeter, the other a circumference, but we
+    // overestimate node spacing, and by the time that it matters, the error starts to become small enough that it
+    // doesn't matter
+    let nodesRequiredSpacing = this._rootNode!.children!.size *  (this.svgPillRadius * 3)
+    let nodesAvailableSpacing = 2 * Math.PI * (this.svgRingRadius - this.svgPillLength)
+
+    if (nodesRequiredSpacing > nodesAvailableSpacing) {
+      // Scale up the radius so that we have enough room if we need id
+      this.svgRingRadius = this.svgRingRadius * (nodesRequiredSpacing / nodesAvailableSpacing)
+      // Tell D3 the space it has to place the tree within. We're doing a radial tree, so we go from 0 to 2PI in width
+      this.treeLayout.size([Math.PI * 2, this.svgRingRadius * this.hierarchy.height])
+    } else if (this._rootNode?.hierarchy?.height == 1) {
+      // We haven't used all our available room, so we can shrink the range that D3 operates over. We should only do this
+      // if we haven't expanded beyond one layer, because that becomes messy to properly calculate, and this is just a quick estimate
+      // to ensure the first layer looks good.
+      this.treeLayout.size([nodesRequiredSpacing / nodesAvailableSpacing * Math.PI * 2, this.svgRingRadius * this.hierarchy.height])
+    } else {
+      this.treeLayout.size([Math.PI * 2, this.svgRingRadius * this.hierarchy.height])
+    }
     // Finally, tell the layout which data it's supposed to use.
     this.treeLayout(this.hierarchy)
   }
@@ -164,12 +189,52 @@ export class TreeDataDisplayComponent {
     }
   }
 
-  generateLinkPath(source: TreeNode, target: TreeNode): string {
+  generateLinkPath(source: TreeNode, target: TreeNode): string | null {
     let startCoord = this.polToCart(source.hierarchy!.y! + this.svgPillRadius, this.getNodeRotation(source))
     let ctrlStart = this.polToCart(source.hierarchy!.y! + this.svgPillRadius + this.svgRingRadius / 4, this.getNodeRotation(source))
     let ctrlEnd = this.polToCart(target.hierarchy!.y! - this.svgPillLength - this.svgPillRadius - this.svgRingRadius / 4, this.getNodeRotation(target))
     let endCoord = this.polToCart(target.hierarchy!.y! - this.svgPillLength - this.svgPillRadius, this.getNodeRotation(target))
     return `M ${startCoord.x()} ${startCoord.y()} C ${ctrlStart.x()} ${ctrlStart.y()} ${ctrlEnd.x()} ${ctrlEnd.y()} ${endCoord.x()} ${endCoord.y()}`
     // return `M ${startCoord.x()} ${startCoord.y()} L ${ctrlStart.x()} ${ctrlStart.y()} ${ctrlEnd.x()} ${ctrlEnd.y()} ${endCoord.x()} ${endCoord.y()}`
+  }
+
+
+
+  informRebuildRequired(graphDoc: GraphDocument) {
+    // We need to rebuild the tree nodes associated with the given graph node - or at least resolve any changes made
+    // -- Graph nodes and tree nodes exist in parallel hierarchies. We need to check that the hierarchy is still consistent.
+    //    GN <------> TN[]
+    //     |           |
+    //     |           |
+    //    GNC[] <--?--> TNC[][]
+    // 1. Walk the path GN -> TN -> TNC -> GNC, and check that GN does have the found GNC as a child. If it doesn't,
+    //    then the link between GN and GNC must have been removed, so we should do the same for the link between TN and
+    //    TNC
+    // 2. We've removed any extra tree nodes, so any discrepancies between the length of a member of TN's children and
+    //    the length of GN's children must be a missing tree node of some sort.
+    // 3. Walk the paths GN -> TN -> TNC[] and GN -> GNC. Make sure that at least one member of TNC[] has a graph node
+    //    that matches GNC. If not, create a Tree Node associated with GNC, and wire it into the correct parent tree
+    //    node.
+    // 4. If the graph is currently being displayed (i.e. this._rootNode is set) then rebuild the d3 hierarchy as well.
+
+    graphDoc.forEachTreeNode((treeNode) => {
+      for (let childTreeNode of treeNode.children) {
+        let childGraphDoc = childTreeNode.graphDocument;
+        if (!graphDoc.linksTo.has(childGraphDoc)) {
+          treeNode.children.delete(childTreeNode)
+        }
+      }
+      if (treeNode.children.size != graphDoc.linksTo.size) {
+        for (let childGraphDoc of graphDoc.linksTo) {
+          if (!Array.from(treeNode.children).some((childTreeNode) => childTreeNode.graphDocument === childGraphDoc)) {
+            let newTreeNodeChild = new TreeNode(childGraphDoc);
+            treeNode.children.add(newTreeNodeChild)
+          }
+        }
+      }
+    })
+    if (this._rootNode) {
+      this.buildTree()
+    }
   }
 }
