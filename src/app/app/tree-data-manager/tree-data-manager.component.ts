@@ -1,10 +1,10 @@
 import {Component, ViewChild} from '@angular/core';
-import {GraphDataService, Operation} from "../graph-data.service";
+import {GraphDataService, Operation} from "../../graph-data.service";
 import {MatSidenav, MatSidenavContainer, MatSidenavContent} from "@angular/material/sidenav";
 import {TreeDataDetailComponent} from "../tree-data-detail/tree-data-detail.component";
 import {TreeDataDisplayComponent} from "../tree-data-display/tree-data-display.component";
-import {GraphDocument} from "../graph-document";
-import {TreeNode} from "../tree-node";
+import {GraphDocument} from "../../graph-document";
+import {TreeNode} from "../../tree-node";
 import {TreeDataSelectorComponent} from "../tree-data-selector/tree-data-selector.component";
 
 @Component({

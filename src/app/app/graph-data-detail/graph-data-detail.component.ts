@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {GraphicalNode} from "../simulation-node";
+import {GraphicalNode} from "../../simulation-node";
 
 @Component({
   selector: 'app-graph-data-detail',

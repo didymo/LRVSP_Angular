@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {TreeNode} from "../tree-node";
+import {TreeNode} from "../../tree-node";
 
 @Component({
   selector: 'app-tree-data-detail',
