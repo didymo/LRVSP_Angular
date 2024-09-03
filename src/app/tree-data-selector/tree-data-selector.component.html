@@ -1,0 +1,10 @@
+<mat-autocomplete #auto=matAutocomplete [displayWith]="displayFn">
+  @for (option of filteredOptions(); track option) {
+    <mat-option [value]="option">
+      {{option.nodeTitle}}
+    </mat-option>
+  }
+</mat-autocomplete>
+<mat-form-field>
+  <input type="text" matInput [formControl]="formControl" [matAutocomplete]="auto">
+</mat-form-field>

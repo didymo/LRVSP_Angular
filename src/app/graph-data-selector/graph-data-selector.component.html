@@ -1,6 +1,6 @@
-<select [(ngModel)]="selectedValue">
-  <option
+<mat-select [(ngModel)]="selectedValue">
+  <mat-option
     *ngFor="let option of options"
-    [ngValue]="option"
-  >{{option.nodeTitle}}</option>
-</select>
+    [value]="option"
+  >{{option.nodeTitle}}</mat-option>
+</mat-select>
