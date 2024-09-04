@@ -1,10 +1,10 @@
 import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {NgForOf, NgIf} from "@angular/common";
 import * as d3 from 'd3';
-import {GraphicalNode} from "../simulation-node";
-import {TreeNode} from "../tree-node";
+import {GraphicalNode} from "../../simulation-node";
+import {TreeNode} from "../../tree-node";
 import {hierarchy, HierarchyNode, some} from "d3";
-import {GraphDocument} from "../graph-document";
+import {GraphDocument} from "../../graph-document";
 import {MatTooltip} from "@angular/material/tooltip";
 
 
@@ -59,7 +59,7 @@ export class TreeDataDisplayComponent {
     console.log(this.svgScale)
   }
 
-  // Fires whenever a mouseclick happens on the canvas that wasn't on a node - basically, checks for the start of an attempt to drag the canvas around.
+  // Fires whenever a mouseclick happens on the app that wasn't on a node - basically, checks for the start of an attempt to drag the app around.
   canvasDown(event: MouseEvent) {
     if (!this.mouseMovementInfo) {
       // Responsible for converting global coords to local coords.
@@ -68,7 +68,7 @@ export class TreeDataDisplayComponent {
       // Basically, more hassle than it's worth.
       let point = this.getPointFromEvent(event)
       this.mouseMovementInfo = {
-        target: null,         // The same structure is used for canvas dragging and node dragging. Target being null indicated that the canvas was dragged.
+        target: null,         // The same structure is used for app dragging and node dragging. Target being null indicated that the app was dragged.
         x: point.x,
         y: point.y
       }

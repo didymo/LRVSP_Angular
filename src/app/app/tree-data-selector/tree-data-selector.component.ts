@@ -1,9 +1,9 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {GraphicalNode} from "../simulation-node";
+import {GraphicalNode} from "../../simulation-node";
 import {AsyncPipe, KeyValuePipe, NgForOf} from "@angular/common";
 import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatFormField, MatOption, MatSelect} from "@angular/material/select";
-import {GraphDocument} from "../graph-document";
+import {GraphDocument} from "../../graph-document";
 import {MatAutocomplete, MatAutocompleteTrigger} from "@angular/material/autocomplete";
 import {MatInput} from "@angular/material/input";
 import {map, Observable, startWith, tap} from "rxjs";

@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {GraphicalNode} from "../simulation-node";
+import {GraphicalNode} from "../../simulation-node";
 import {NgForOf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {MatOption, MatSelect} from "@angular/material/select";
