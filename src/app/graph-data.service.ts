@@ -17,6 +17,8 @@ import {
 import {DrupalLink} from "./drupal-link";
 import {GraphicalNode} from "./simulation-node";
 import { environment } from '../environments/environment';
+import {Operation} from "./opperation";
+import {DataOperation} from "./data-operation";
 
 
 @Injectable({
@@ -25,8 +27,8 @@ import { environment } from '../environments/environment';
 export class GraphDataService {
   documentCache: Map<String, DrupalDoc> = new Map()
   linkCache: Map<String, DrupalLink[]> = new Map()
-  private documentConsumers: Subject<{op: Operation, doc: DrupalDoc}>[] = []
-  private linkConsumers: Subject<{op: Operation, link: DrupalLink}>[] = []
+  private documentConsumers: Subject<DataOperation<DrupalDoc>>[] = []
+  private linkConsumers: Subject<DataOperation<DrupalLink>>[] = []
   private registeredServiceRequests: ServiceRequest<any, any>[] = []
   private serviceQueue: ServiceRequest<any, any>[] = []
   private rejectedServiceRequests: {req: ServiceRequest<any, any>, reason: string}[] = []
@@ -128,15 +130,15 @@ export class GraphDataService {
       )
   }
 
-  getDocs(): Observable<{op: Operation, doc: DrupalDoc}>{
+  getDocs(): Observable<DataOperation<DrupalDoc>>{
     let url = `${environment.apiUrl}/${environment.apiEndpoints.allDocs}`
-    let newConsumer = new Subject<{op: Operation, doc: DrupalDoc}>()
+    let newConsumer = new Subject<DataOperation<DrupalDoc>>()
     this.documentConsumers.push(newConsumer)
     let returnObservable = newConsumer.pipe(
-      startWith(...Array.from(this.documentCache.values()).map((doc) => {
+      startWith(...Array.from(this.documentCache.values()).map((doc):DataOperation<DrupalDoc> => {
         return {
-          op: Operation.CREATE,
-          doc: doc
+          operation: Operation.CREATE,
+          data: doc
         }
       }))
     )
@@ -152,16 +154,16 @@ export class GraphDataService {
           this.documentCache.set(doc.id, doc);
           for (let consumer of this.documentConsumers) {
             consumer.next({
-              op: Operation.CREATE,
-              doc: doc
+              operation: Operation.CREATE,
+              data: doc
             })
           }
         } else if (!deepEquals(this.documentCache.get(doc.id), doc)) {
           this.documentCache.set(doc.id, doc);
           for (let consumer of this.documentConsumers) {
             consumer.next({
-              op: Operation.UPDATE,
-              doc: doc
+              operation: Operation.UPDATE,
+              data: doc
             })
           }
         }
@@ -170,8 +172,8 @@ export class GraphDataService {
         if (!drupalDocs.some((doc) => key === doc.id)) {
           for (let consumer of this.documentConsumers) {
             consumer.next({
-              op: Operation.DELETE,
-              doc: this.documentCache.get(key)!
+              operation: Operation.DELETE,
+              data: this.documentCache.get(key)!
             })
           }
           this.documentCache.delete(key)
@@ -182,17 +184,17 @@ export class GraphDataService {
     return returnObservable
   }
 
-  getLinks(docId: string): Observable<{op: Operation, link: DrupalLink}> {
+  getLinks(docId: string): Observable<DataOperation<DrupalLink>> {
     let url = `${environment.apiUrl}/${environment.apiEndpoints.linksForDoc}/${docId}`
-    let newConsumer = new Subject<{op: Operation, link: DrupalLink}>()
+    let newConsumer = new Subject<DataOperation<DrupalLink>>()
     this.linkConsumers.push(newConsumer)
     let returnObservable = newConsumer.pipe(
       startWith(...Array.from(this.linkCache.values())
-        .flatMap((linkArray) => {
-          return linkArray.map((link) => {
+        .flatMap((linkArray): DataOperation<DrupalLink>[] => {
+          return linkArray.map((link): DataOperation<DrupalLink> => {
             return {
-              op: Operation.CREATE,
-              link: link
+              operation: Operation.CREATE,
+              data: link
             }
           })
         })
@@ -208,8 +210,8 @@ export class GraphDataService {
           cachedLinks.push(link)
           for (let consumer of this.linkConsumers) {
             consumer.next({
-              op: Operation.CREATE,
-              link: link
+              operation: Operation.CREATE,
+              data: link
             })
           }
         }
@@ -218,8 +220,8 @@ export class GraphDataService {
         if (!drupalLinks.some((link) => link.toDoc === cachedLink.toDoc)) {
           for (let consumer of this.linkConsumers) {
             consumer.next({
-              op: Operation.DELETE,
-              link: cachedLink
+              operation: Operation.DELETE,
+              data: cachedLink
             })
           }
           this.linkCache.set(docId, this.linkCache.get(docId)!.filter(
@@ -293,12 +295,6 @@ export class GraphDataService {
     )
   }
 
-}
-
-export enum Operation {
-  CREATE,
-  UPDATE,
-  DELETE
 }
 
 class ServiceRequest<T, U> {

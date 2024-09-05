@@ -1,11 +1,12 @@
 import {Component, ViewChild} from '@angular/core';
-import {GraphDataService, Operation} from "../../graph-data.service";
+import {GraphDataService} from "../../graph-data.service";
 import {MatSidenav, MatSidenavContainer, MatSidenavContent} from "@angular/material/sidenav";
 import {TreeDataDetailComponent} from "../tree-data-detail/tree-data-detail.component";
 import {TreeDataDisplayComponent} from "../tree-data-display/tree-data-display.component";
 import {GraphDocument} from "../../graph-document";
 import {TreeNode} from "../../tree-node";
 import {TreeDataSelectorComponent} from "../tree-data-selector/tree-data-selector.component";
+import {Operation} from "../../opperation";
 
 @Component({
   selector: 'app-tree-data-manager',
@@ -34,23 +35,23 @@ export class TreeDataManagerComponent {
 
   ngOnInit() {
     this.graphDataService.getDocs().subscribe((value) => {
-      switch (value.op) {
+      switch (value.operation) {
         case Operation.CREATE:
-          if (this.nodes.has(value.doc.id)) {
-            let existingDoc = this.nodes.get(value.doc.id)!
-            existingDoc.nodeTitle = value.doc.title
-            existingDoc.tracked = value.doc.tracked
+          if (this.nodes.has(value.data.id)) {
+            let existingDoc = this.nodes.get(value.data.id)!
+            existingDoc.nodeTitle = value.data.title
+            existingDoc.tracked = value.data.tracked
             existingDoc.stub = false
           } else {
-            this.nodes.set(value.doc.id, new GraphDocument(
-              value.doc.id,
-              value.doc.title,
-              value.doc.tracked
+            this.nodes.set(value.data.id, new GraphDocument(
+              value.data.id,
+              value.data.title,
+              value.data.tracked
             ))
           }
-          this.graphDataService.getLinks(value.doc.id).subscribe((value) => {
-            let link = value.link
-            switch (value.op) {
+          this.graphDataService.getLinks(value.data.id).subscribe((value) => {
+            let link = value.data
+            switch (value.operation) {
               case Operation.CREATE:
                 let fromDoc = this.nodes.get(link.fromDoc) ?? new GraphDocument(link.fromDoc, '', false, new Set(), true)
                 this.nodes.set(link.fromDoc, fromDoc)
@@ -68,21 +69,21 @@ export class TreeDataManagerComponent {
           })
           break
         case Operation.UPDATE:
-          if (this.nodes.has(value.doc.id)) {
-            let existingDoc = this.nodes.get(value.doc.id)!
-            existingDoc.nodeTitle = value.doc.title
-            existingDoc.tracked = value.doc.tracked
+          if (this.nodes.has(value.data.id)) {
+            let existingDoc = this.nodes.get(value.data.id)!
+            existingDoc.nodeTitle = value.data.title
+            existingDoc.tracked = value.data.tracked
             existingDoc.stub = false
           } else {
-            this.nodes.set(value.doc.id, new GraphDocument(
-              value.doc.id,
-              value.doc.title,
-              value.doc.tracked
+            this.nodes.set(value.data.id, new GraphDocument(
+              value.data.id,
+              value.data.title,
+              value.data.tracked
             ))
           }
           break
         case Operation.DELETE:
-          this.nodes.delete(value.doc.id)
+          this.nodes.delete(value.data.id)
       }
     })
   }
