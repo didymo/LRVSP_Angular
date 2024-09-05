@@ -29,12 +29,8 @@
   </g>
   <g id="nodes">
 <!--    <circle attr.r="{{svgRingRadius}}" stroke="black" fill="none"/>-->
-    <svg #nodes *ngFor="let node of _rootNode?.flatten(); index as i" matTooltip="{{node.graphDocument.nodeTitle}}"
-         attr.viewBox="0 0 {{svgPillLength + 2 * svgPillRadius}} {{2 * svgPillRadius}}"
-         overflow="visible"
-         attr.width="{{svgPillLength + 2 * svgPillRadius}}" attr.height="{{2 * svgPillRadius}}"
-         class="node"
-         attr.transform="rotate({{getNodeRotation(node)}})translate({{node.hierarchy?.y}}, 0)"
+    <g attr.transform="rotate({{getNodeRotation(node)}})translate({{node.hierarchy?.y}}, 0)"
+       #nodes *ngFor="let node of _rootNode?.flatten(); index as i" matTooltip="{{node.graphDocument.nodeTitle}}"
     >
       <path attr.d="M{{-svgPillLength}},{{-svgPillRadius}} H 0 a {{svgPillRadius}} {{svgPillRadius}} 0 0 1 0 {{2 * svgPillRadius}} H {{-svgPillLength}} a {{svgPillRadius}} {{svgPillRadius}} 0 0 1 0 {{-svgPillRadius * 2}} Z"
             stroke="black" attr.fill="{{node.hover ? 'red' : 'white'}}"
@@ -49,6 +45,6 @@
         <textPath *ngIf="getNodeRotation(node)  <= 90 || getNodeRotation(node) >= 270" href="#textpath" >{{node.hierarchy?.data?.graphDocument?.nodeTitle}}</textPath>
         <textPath *ngIf="getNodeRotation(node)  > 90 && getNodeRotation(node) < 270" href="#revtextpath" >{{node.hierarchy?.data?.graphDocument?.nodeTitle}}</textPath>
       </text>
-    </svg>
+    </g>
   </g>
 </svg>
