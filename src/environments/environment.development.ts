@@ -3,6 +3,7 @@ export const environment = {
   apiUrl: 'http://api.lrvs.local',
   apiEndpoints: {
     allDocs: 'docs',
-    linksForDoc: 'links'
+    linksForDoc: 'links',
+    docDetails: 'details'
   }
 };

@@ -19,6 +19,7 @@ import {GraphicalNode} from "./simulation-node";
 import { environment } from '../environments/environment';
 import {Operation} from "./opperation";
 import {DataOperation} from "./data-operation";
+import {DrupalDocDetails} from "./drupal-doc-details";
 
 
 @Injectable({
@@ -27,8 +28,10 @@ import {DataOperation} from "./data-operation";
 export class GraphDataService {
   documentCache: Map<String, DrupalDoc> = new Map()
   linkCache: Map<String, DrupalLink[]> = new Map()
+  documentDetailCache: Map<String, DrupalDocDetails> = new Map()
   private documentConsumers: Subject<DataOperation<DrupalDoc>>[] = []
   private linkConsumers: Subject<DataOperation<DrupalLink>>[] = []
+  private detailConsumers: Map<string, Subject<DataOperation<DrupalDocDetails>>[]> = new Map()
   private registeredServiceRequests: ServiceRequest<any, any>[] = []
   private serviceQueue: ServiceRequest<any, any>[] = []
   private rejectedServiceRequests: {req: ServiceRequest<any, any>, reason: string}[] = []
@@ -179,7 +182,7 @@ export class GraphDataService {
           this.documentCache.delete(key)
         }
       }
-    }, true )
+    }, false )
     this.registerServiceRequest(req)
     return returnObservable
   }
@@ -234,6 +237,11 @@ export class GraphDataService {
     return returnObservable
   }
 
+  getDocDetails(docId: string): Observable<DrupalDocDetails> {
+    let url = `${environment.apiUrl}/${environment.apiEndpoints.docDetails}/${docId}`
+    return this.http.get<DrupalDocDetails>(url)
+  }
+
   private registerServiceRequest(req: ServiceRequest<any, any>) {
     if (req.repeat) {
       let foundReq = this.registeredServiceRequests.find((potMatch) => {return potMatch.url === req.url})
@@ -246,10 +254,11 @@ export class GraphDataService {
     } else {
       this.serviceQueue.push(req)
     }
+    console.log(this.serviceQueue)
   }
 
   private serviceRequestTick() {
-    console.log(`Service Tick: ${this.activeRequestCount} active requests, ${this.serviceQueue.length} requests in queue.`)
+    // console.log(`Service Tick: ${this.activeRequestCount} active requests, ${this.serviceQueue.length} requests in queue.`)
     // Any service requests that we ignored last run, add them back to the active queue, and clear the lis tof rejected requests.
     this.serviceQueue.push(...this.rejectedServiceRequests.map((a) => a.req))
     this.rejectedServiceRequests = []
@@ -268,10 +277,10 @@ export class GraphDataService {
         this.rejectedServiceRequests.push({req: req, reason: "Last ran too recently"})
       }
     }
-    if (this.rejectedServiceRequests.length > 0) {
-      console.log(`Rejected ${this.rejectedServiceRequests.length} requests.`)
-      console.log(this.rejectedServiceRequests)
-    }
+    // if (this.rejectedServiceRequests.length > 0) {
+    //   console.log(`Rejected ${this.rejectedServiceRequests.length} requests.`)
+    //   console.log(this.rejectedServiceRequests)
+    // }
   }
 
   private handleServiceRequest(req: ServiceRequest<any, any>) {

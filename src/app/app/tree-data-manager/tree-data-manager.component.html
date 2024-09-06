@@ -12,7 +12,7 @@
       <div class="sidenavActivator" (click)="detailSidebar.close()">
         <span>&gt;</span>
       </div>
-      <app-tree-data-detail [node]="detailNode" (roll)="rollToNode($event)"/>
+      <app-tree-data-detail [node]="detailNode" [details]="detailNodeDetails" (expandSelected)="displayComponent.nodeClick($event)"/>
     </div>
   </mat-sidenav>
   <mat-sidenav-content>

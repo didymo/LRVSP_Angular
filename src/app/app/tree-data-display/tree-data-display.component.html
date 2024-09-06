@@ -37,7 +37,7 @@
             (click)="pillClicked($event, node)"
             (mouseover)="nodeHover($event, node)"
             (mouseleave)="nodeLeave($event, node)"/>
-      <circle attr.r="{{svgPillRadius/2}}" cx="0" cy="0" stroke="black" (mousedown)="nodeClick($event, node)"/>
+      <circle attr.r="{{svgPillRadius/2}}" cx="0" cy="0" stroke="black" (mousedown)="nodeClick(node)"/>
       <text font-size="7" dominant-baseline="central"
             (click)="pillClicked($event, node)"
             (mouseover)="nodeHover($event, node)"

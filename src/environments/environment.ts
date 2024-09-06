@@ -2,7 +2,8 @@ export const environment = {
   production: true,
   apiUrl: '',
   apiEndpoints: {
-    allDocs: '',
-    linksForDoc: ''
+    allDocs: 'docs',
+    linksForDoc: 'links',
+    docDetails: 'details'
   }
 };

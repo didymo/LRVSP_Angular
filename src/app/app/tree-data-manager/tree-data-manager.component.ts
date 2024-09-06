@@ -7,6 +7,8 @@ import {GraphDocument} from "../../graph-document";
 import {TreeNode} from "../../tree-node";
 import {TreeDataSelectorComponent} from "../tree-data-selector/tree-data-selector.component";
 import {Operation} from "../../opperation";
+import {DrupalDocDetails} from "../../drupal-doc-details";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-tree-data-manager',
@@ -25,6 +27,8 @@ import {Operation} from "../../opperation";
 export class TreeDataManagerComponent {
   nodes: Map<string, GraphDocument> = new Map
   detailNode: TreeNode | null = null
+  detailNodeDetails: DrupalDocDetails | null = null
+  detailSubscriber: Subscription | null = null
 
   @ViewChild(TreeDataDisplayComponent) displayComponent!: TreeDataDisplayComponent;
   @ViewChild('detailSidebar') detailSidebar!: MatSidenav;
@@ -96,6 +100,13 @@ export class TreeDataManagerComponent {
   }
 
   nodeSelected(node: TreeNode) {
+    console.log("Hello")
+    this.detailSubscriber?.unsubscribe()
+    this.detailSubscriber = this.graphDataService.getDocDetails(node.graphDocument.nodeId).subscribe(
+      (detail) => {
+        this.detailNodeDetails = detail
+      }
+    )
     this.detailNode = node
     this.detailSidebar?.open()
   }

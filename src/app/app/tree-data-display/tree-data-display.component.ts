@@ -98,7 +98,7 @@ export class TreeDataDisplayComponent {
     return this.domPoint.matrixTransform(inverseMatrix)
   }
 
-  nodeClick(event: MouseEvent, node: TreeNode) {
+  nodeClick(node: TreeNode) {
     node.toggleExpanded()
     this.buildTree()
     this.rollToNode(node)

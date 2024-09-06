@@ -1,0 +1,22 @@
+:host {
+  display: flex;
+  width: 100%
+}
+
+.vbox {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.hbox {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
+}
+
+#detailHeader {
+  text-align: center;
+}
