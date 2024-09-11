@@ -1,15 +1,14 @@
-
 <nav>
   <img src="assets/home-icon.png" alt="DocuMap Logo" class="icon">
-  <ul>
+  <ul class="nav-links">
     <li><a routerLink="/">Home</a></li>
     <li><a routerLink="/features">Features</a></li>
-    <li><a routerLink="/pricing">Pricing</a></li>
-    <li><a routerLink="/community">Community</a></li>
     <li><a routerLink="/support">Support</a></li>
+    <li><a routerLink="/setting">Settings</a></li>
+
 
   </ul>
-  <ul>
+  <ul class="nav-buttons">
     <li><a routerLink="/login" class="btn btn-primary">Login</a></li>
   </ul>
 </nav>
@@ -17,14 +16,11 @@
 <div class="home-container text-center">
   <img src="assets/documap-logo.png" alt="DocuMap Logo" class="logo">
   <div class="search-container">
-    <input type="text" class="search-bar" placeholder="Public files">
+    <input type="text" class="search-bar" placeholder="Search public files">
     <button class="search-button">
-      <fa-icon [icon]=faSearch />
+      <fa-icon [icon]="faSearch"></fa-icon>
     </button>
   </div>
   <p>Welcome to DocuMap, your comprehensive tool for visualizing relationships and mapping policy documents with ease.</p>
-</div>
 
-<ul>
-<li><a routerLink="/settings"><fa-icon [icon]="faCog"/> Settings</a></li> <!-- Settings Link -->
-</ul>
+</div>
