@@ -1,0 +1,37 @@
+<nav>
+  <img src="assets/home-icon.png" alt="DocuMap Logo" class="icon">
+  <ul class="nav-links">
+    <li><a routerLink="/">Home</a></li>
+    <li><a routerLink="/feature">Features</a></li>
+    <li><a routerLink="/support">Support</a></li>
+    <li><a routerLink="/setting">Settings</a></li>
+
+
+  </ul>
+  <ul class="nav-buttons">
+    <li><a routerLink="/login" class="btn btn-primary">Login</a></li>
+  </ul>
+</nav>
+<div class="settings-container">
+  <h2>Settings</h2>
+  <div class="setting-item">
+    <label for="theme">Theme:</label>
+    <select id="theme" (change)="setTheme($event)">
+      <option value="light">Light</option>
+      <option value="dark">Dark</option>
+    </select>
+  </div>
+
+  <div class="setting-item">
+    <label for="language">Language:</label>
+    <select id="language" (change)="setLanguage($event)">
+      <option value="en">English</option>
+      <option value="es">Spanish</option>
+    </select>
+  </div>
+
+  <div class="setting-item">
+    <label for="notifications">Email Notifications:</label>
+    <input type="checkbox" id="notifications" (change)="toggleNotifications($event)">
+  </div>
+</div>

@@ -38,36 +38,11 @@ nav ul li .btn {
 nav ul li .btn:hover {
   background-color: #0056b3;
 }
-.support-container {
+
+.settings-container {
   padding: 20px;
-  max-width: 800px;
-  margin: 0 auto;
-  font-family: Arial, sans-serif;
 }
 
-.support-container h1 {
-  color: #007bff;
-}
-
-.support-container h2 {
-  color: #333;
-  margin-top: 20px;
-}
-
-.support-container p {
-  margin-bottom: 15px;
-  line-height: 1.6;
-}
-.btn-secondary {
-  background-color: #6c757d;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 50px;
-}
-
-.btn-secondary:hover {
-  background-color: #5a6268;
+.setting-item {
+  margin-bottom: 20px;
 }

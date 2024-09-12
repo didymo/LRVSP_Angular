@@ -60,7 +60,7 @@ nav ul li .btn:hover {
   background-image: url('/assets/paperbg.jpg');
   background-size: cover; /* Ensures the image covers the entire container */
   background-position: center; /* Centers the image */
-  height: 100vh;
+  height: 92.5vh;
   display: flex;
   justify-content: center;
   align-items: center;
