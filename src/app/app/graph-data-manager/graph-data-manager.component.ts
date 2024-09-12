@@ -2,8 +2,8 @@ import {Component, ViewChild} from '@angular/core';
 import {GraphDataSelectorComponent} from "../graph-data-selector/graph-data-selector.component";
 import {GraphDataDisplayComponent} from "../graph-data-display/graph-data-display.component";
 import {GraphDataDetailComponent} from "../graph-data-detail/graph-data-detail.component";
-import {GraphicalNode} from "../simulation-node";
-import {GraphDataService} from "../graph-data.service";
+import {GraphicalNode} from "../../simulation-node";
+import {GraphDataService} from "../../graph-data.service";
 import {MatSidenavContainer, MatSidenavContent, MatSidenav} from "@angular/material/sidenav";
 
 @Component({

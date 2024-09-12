@@ -13,13 +13,13 @@
       viewBox="0 0 10 10"
       refX="5"
       refY="5"
-      markerWidth="10"
-      markerHeight="10"
+      markerWidth="5"
+      markerHeight="5"
       orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
-    <path d="M-60,0 H 0" stroke="red" id="textpath"></path>
-    <path d="M-4,0 H -60" stroke="red" id="revtextpath"></path>
+    <path attr.d="M-60,0 H -{{svgPillRadius}}" stroke="red" id="textpath"></path>
+    <path attr.d="M-{{svgPillRadius}},0 H -60" stroke="red" id="revtextpath"></path>
   </defs>
   <!-- Because Angular doesn't like things touching the DOM, we pre-generate all the elements that D3 might need. Then, we let Angular handle linking the data (i.e. x, y, so on so forth) to the actual elements. -->
   <g id="links">
@@ -29,12 +29,8 @@
   </g>
   <g id="nodes">
 <!--    <circle attr.r="{{svgRingRadius}}" stroke="black" fill="none"/>-->
-    <svg #nodes *ngFor="let node of _rootNode?.flatten(); index as i"
-         attr.viewBox="0 0 {{nodeSize}} {{nodeSize}}"
-         overflow="visible"
-         attr.width="{{nodeSize}}" attr.height="{{nodeSize}}"
-         class="node"
-         attr.transform="rotate({{getNodeRotation(node)}})translate({{node.hierarchy?.y}}, 0)"
+    <g attr.transform="rotate({{getNodeRotation(node)}})translate({{node.hierarchy?.y}}, 0)"
+       #nodes *ngFor="let node of _rootNode?.flatten(); index as i" matTooltip="{{node.graphDocument.nodeTitle}}"
     >
       <path attr.d="M{{-svgPillLength}},{{-svgPillRadius}} H 0 a {{svgPillRadius}} {{svgPillRadius}} 0 0 1 0 {{2 * svgPillRadius}} H {{-svgPillLength}} a {{svgPillRadius}} {{svgPillRadius}} 0 0 1 0 {{-svgPillRadius * 2}} Z"
             stroke="black" attr.fill="{{node.hover ? 'red' : 'white'}}"
@@ -46,9 +42,9 @@
             (click)="pillClicked($event, node)"
             (mouseover)="nodeHover($event, node)"
             (mouseleave)="nodeLeave($event, node)">
-        <textPath *ngIf="getNodeRotation(node)  <= 90 || getNodeRotation(node) >= 270" href="#textpath" >{{node.hierarchy?.data?.document?.nodeTitle}}</textPath>
-        <textPath *ngIf="getNodeRotation(node)  > 90 && getNodeRotation(node) < 270" href="#revtextpath" >{{node.hierarchy?.data?.document?.nodeTitle}}</textPath>
+        <textPath *ngIf="getNodeRotation(node)  <= 90 || getNodeRotation(node) >= 270" href="#textpath" >{{node.hierarchy?.data?.graphDocument?.nodeTitle}}</textPath>
+        <textPath *ngIf="getNodeRotation(node)  > 90 && getNodeRotation(node) < 270" href="#revtextpath" >{{node.hierarchy?.data?.graphDocument?.nodeTitle}}</textPath>
       </text>
-    </svg>
+    </g>
   </g>
 </svg>

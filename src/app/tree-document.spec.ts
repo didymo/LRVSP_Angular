@@ -1,7 +1,7 @@
-import { TreeDocument } from './tree-document';
+import { GraphDocument } from './graph-document';
 
 describe('TreeDocument', () => {
   it('should create an instance', () => {
-    expect(new TreeDocument()).toBeTruthy();
+    expect(new GraphDocument()).toBeTruthy();
   });
 });

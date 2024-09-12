@@ -2,7 +2,7 @@ import {Component, ElementRef, EventEmitter, Output, ViewChild} from '@angular/c
 import {NgForOf} from "@angular/common";
 import * as d3 from 'd3';
 import {forceCenter, Simulation, forceLink, ForceLink, forceManyBody} from "d3";
-import {GraphicalNode} from "../simulation-node";
+import {GraphicalNode} from "../../simulation-node";
 
 
 // The GraphDataDisplay component is designed to provide a simple way of displaying document nodes
@@ -170,7 +170,7 @@ export class GraphDataDisplayComponent {
     this.initNodes([])
   }
 
-  // Fires whenever a mouseclick happens on the canvas that wasn't on a node - basically, checks for the start of an attempt to drag the canvas around.
+  // Fires whenever a mouseclick happens on the app that wasn't on a node - basically, checks for the start of an attempt to drag the app around.
   canvasDown(event: MouseEvent) {
     if (!this.mouseMovementInfo) {
       // Responsible for converting global coords to local coords.
@@ -179,7 +179,7 @@ export class GraphDataDisplayComponent {
       // Basically, more hassle than it's worth.
       let point = this.getPointFromEvent(event)
       this.mouseMovementInfo = {
-        target: null,         // The same structure is used for canvas dragging and node dragging. Target being null indicated that the canvas was dragged.
+        target: null,         // The same structure is used for app dragging and node dragging. Target being null indicated that the app was dragged.
         x: point.x,
         y: point.y
       }
@@ -214,7 +214,7 @@ export class GraphDataDisplayComponent {
     event.preventDefault()
     if (!this.mouseMovementInfo) return
 
-    // Reheat the simulation just enough to run while we're dragging either the canvas or the node.
+    // Reheat the simulation just enough to run while we're dragging either the app or the node.
     this.simulation.alpha(0.1)
     this.simulation.restart()
     if (!this.mouseMovementInfo.target) {
