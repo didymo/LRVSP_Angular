@@ -5,5 +5,9 @@ export const environment = {
     allDocs: 'docs',
     linksForDoc: 'links',
     docDetails: 'details'
+  },
+  requestScheduler: {
+    maxActiveRequests: 10,
+    minimumRequestTimeDelta: 1000
   }
 };

@@ -1,9 +1,7 @@
 import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {NgForOf, NgIf} from "@angular/common";
 import * as d3 from 'd3';
-import {GraphicalNode} from "../../simulation-node";
 import {TreeNode} from "../../tree-node";
-import {hierarchy, HierarchyNode, some} from "d3";
 import {GraphDocument} from "../../graph-document";
 import {MatTooltip} from "@angular/material/tooltip";
 
