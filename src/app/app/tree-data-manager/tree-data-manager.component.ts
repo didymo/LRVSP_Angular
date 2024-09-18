@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, Input, ViewChild} from '@angular/core';
 import {GraphDataService} from "../../graph-data.service";
 import {MatSidenav, MatSidenavContainer, MatSidenavContent} from "@angular/material/sidenav";
 import {TreeDataDetailComponent} from "../tree-data-detail/tree-data-detail.component";
@@ -9,6 +9,7 @@ import {TreeDataSelectorComponent} from "../tree-data-selector/tree-data-selecto
 import {Operation} from "../../opperation";
 import {DrupalDocDetails} from "../../drupal-doc-details";
 import {Subscription} from "rxjs";
+import {DrupalDoc} from "../../drupal-doc";
 
 @Component({
   selector: 'app-tree-data-manager',
@@ -25,19 +26,31 @@ import {Subscription} from "rxjs";
   styleUrl: './tree-data-manager.component.scss'
 })
 export class TreeDataManagerComponent {
+  @Input() preselect: string | undefined;
+  preselectParsed: DrupalDoc | undefined;
   nodes: Map<string, GraphDocument> = new Map
   detailNode: TreeNode | null = null
   detailNodeDetails: DrupalDocDetails | null = null
   detailSubscriber: Subscription | null = null
 
+  @ViewChild(TreeDataSelectorComponent) selectorComponent!: TreeDataSelectorComponent;
   @ViewChild(TreeDataDisplayComponent) displayComponent!: TreeDataDisplayComponent;
   @ViewChild('detailSidebar') detailSidebar!: MatSidenav;
 
   constructor(private graphDataService: GraphDataService) {
-
+    // this.preselect = {
+    //   "id": "1",
+    //   "title": "24-Hour Economy Commissioner Act 2023",
+    //   "tracked": true
+    // }
   }
 
   ngOnInit() {
+    console.log(this.preselect)
+    if (this.preselect) {
+      this.preselectParsed = JSON.parse(this.preselect)
+    }
+    console.log(this.preselectParsed)
     this.graphDataService.getDocs().subscribe((value) => {
       switch (value.operation) {
         case Operation.CREATE:
@@ -52,6 +65,11 @@ export class TreeDataManagerComponent {
               value.data.title,
               value.data.tracked
             ))
+          }
+          console.log(this.preselectParsed?.id, value.data.id)
+          if (this.preselectParsed && this.preselectParsed.id == value.data.id) {
+            this.selectorComponent.setSelectedValue(this.nodes.get(this.preselectParsed.id)!)
+            this.dropDownSelect(this.nodes.get(this.preselectParsed.id)!)
           }
           this.graphDataService.getLinks(value.data.id).subscribe((value) => {
             let link = value.data

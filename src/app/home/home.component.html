@@ -15,11 +15,20 @@
 
 <div class="home-container text-center">
   <img src="assets/documap-logo.png" alt="DocuMap Logo" class="logo">
+  <mat-autocomplete #auto=matAutocomplete [displayWith]="displayFn" panelWidth="500px">
+    @for (option of filteredOptions(); track option) {
+      <mat-option [value]="option">
+        {{option.title}}
+      </mat-option>
+    }
+  </mat-autocomplete>
   <div class="search-container">
-    <input type="text" class="search-bar" placeholder="Search public files">
-    <button class="search-button">
-      <fa-icon [icon]="faSearch"></fa-icon>
-    </button>
+    <mat-form-field style="width: 500px;">
+      <input type="text" matInput [formControl]="formControl" [matAutocomplete]="auto">
+      <button matSuffix mat-icon-button (click)="navigateApp()">
+        <fa-icon [icon]="faSearch"></fa-icon>
+      </button>
+    </mat-form-field>
   </div>
   <p>Welcome to DocuMap, your comprehensive tool for visualizing relationships and mapping policy documents with ease.</p>
 

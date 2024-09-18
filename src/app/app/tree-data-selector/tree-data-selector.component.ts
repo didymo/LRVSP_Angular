@@ -5,6 +5,7 @@ import {MatFormField, MatOption, MatSelect} from "@angular/material/select";
 import {GraphDocument} from "../../graph-document";
 import {MatAutocomplete, MatAutocompleteTrigger} from "@angular/material/autocomplete";
 import {MatInput} from "@angular/material/input";
+import {DrupalDoc} from "../../drupal-doc";
 
 @Component({
   selector: 'app-tree-data-selector',
@@ -35,7 +36,9 @@ export class TreeDataSelectorComponent {
   private _selectedValue: GraphDocument | null = null
 
   constructor() {
+    console.log(this.formControl)
     this.formControl.valueChanges.subscribe((val) => {
+      console.log(this.formControl)
       if (val instanceof GraphDocument) {
         this.selectedValue = val
       } else {
@@ -72,5 +75,10 @@ export class TreeDataSelectorComponent {
         }
       );
     }
+  }
+
+  setSelectedValue(preselect: GraphDocument) {
+    console.log(preselect)
+    this.formControl.setValue(preselect)
   }
 }
