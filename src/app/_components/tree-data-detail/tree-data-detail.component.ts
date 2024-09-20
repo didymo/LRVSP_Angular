@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {TreeNode} from "../../tree-node";
+import {TreeNode} from "../../_classes/tree-node";
 import {MatAnchor, MatButton} from "@angular/material/button";
-import {DrupalDocDetails} from "../../drupal-doc-details";
+import {DrupalDocDetails} from "../../_interfaces/drupal-doc-details";
 import {environment} from "../../../environments/environment";
 
 @Component({
@@ -15,7 +15,7 @@ import {environment} from "../../../environments/environment";
   styleUrl: './tree-data-detail.component.scss'
 })
 export class TreeDataDetailComponent {
-  @Input() node: TreeNode | null = null
+  @Input() node: TreeNode | undefined
   @Input() details: DrupalDocDetails | null = null
   @Output() expandSelected = new EventEmitter<TreeNode>
   protected readonly environment = environment;

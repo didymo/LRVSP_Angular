@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {DrupalDoc} from "./drupal-doc";
+import {DrupalDoc} from "../_interfaces/drupal-doc";
 import {
   concatAll,
   finalize,
@@ -13,13 +13,13 @@ import {
   tap,
   UnaryFunction
 } from "rxjs";
-import {DrupalLink} from "./drupal-link";
-import {environment} from '../environments/environment';
-import {Operation} from "./opperation";
-import {DataOperation} from "./data-operation";
-import {DrupalDocDetails} from "./drupal-doc-details";
+import {DrupalLink} from "../_interfaces/drupal-link";
+import {environment} from '../../environments/environment';
+import {Operation} from "../_enums/opperation";
+import {DataOperation} from "../_interfaces/data-operation";
+import {DrupalDocDetails} from "../_interfaces/drupal-doc-details";
 import {RequestSchedulerService} from "./request-scheduler.service";
-import {DefaultableMap} from "./defaultable-map";
+import {DefaultableMap} from "../_classes/defaultable-map";
 
 
 @Injectable({

@@ -8,12 +8,12 @@ import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatAutocomplete, MatAutocompleteTrigger, MatOption} from "@angular/material/autocomplete";
 import {MatFormField, MatPrefix, MatSuffix} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
-import {GraphDataService} from "../graph-data.service";
-import {DrupalDoc} from "../drupal-doc";
-import {Operation} from "../opperation";
-import {DefaultableMap} from "../defaultable-map";
+import {GraphDataService} from "../../_services/graph-data.service";
+import {DrupalDoc} from "../../_interfaces/drupal-doc";
+import {Operation} from "../../_enums/opperation";
+import {DefaultableMap} from "../../_classes/defaultable-map";
 import {MatButton, MatIconButton} from "@angular/material/button";
-import {routes} from "../app.routes";
+import {routes} from "../../app.routes";
 
 @Component({
   selector: 'app-home',
@@ -65,11 +65,9 @@ export class HomeComponent {
         this.filterVal = val;
       } else {
         this._selectedValue = val
-        console.log(val)
       }
     })
     graphData.getDocs().subscribe((doc) => {
-      console.log("HelloWorld")
       switch (doc.operation) {
         case Operation.CREATE:
         case Operation.UPDATE:
@@ -87,7 +85,6 @@ export class HomeComponent {
       const filterValue = this.filterVal.toLowerCase();
       return Array.from(this.options.values()).filter(
         (option) => {
-          console.log(option)
           return option.title.toLowerCase().includes(filterValue)
         }
       );
@@ -101,6 +98,6 @@ export class HomeComponent {
   protected readonly routes = routes;
 
   navigateApp() {
-    this.router.navigate(['app/', {preselect: JSON.stringify(this._selectedValue)}])
+    this.router.navigate(['app/', {preselectId: this._selectedValue?.id}])
   }
 }

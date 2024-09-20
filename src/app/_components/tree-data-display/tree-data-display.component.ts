@@ -1,9 +1,10 @@
 import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {NgForOf, NgIf} from "@angular/common";
 import * as d3 from 'd3';
-import {TreeNode} from "../../tree-node";
-import {GraphDocument} from "../../graph-document";
+import {TreeNode} from "../../_classes/tree-node";
+import {GraphDocument} from "../../_classes/graph-document";
 import {MatTooltip} from "@angular/material/tooltip";
+import {tree} from "d3";
 
 
 // The GraphDataDisplay component is designed to provide a simple way of displaying document nodes
@@ -54,7 +55,6 @@ export class TreeDataDisplayComponent {
     // Using the naiive this.svgScale *= event.deltaY or this.svgScale += event.deltaY would result in negative scale instead of reduced scale.
     // The base of math.pow() can be adjusted to tune scale stepping
     this.svgScale *= Math.pow(1.1, event.deltaY * 0.01);
-    console.log(this.svgScale)
   }
 
   // Fires whenever a mouseclick happens on the app that wasn't on a node - basically, checks for the start of an attempt to drag the app around.
@@ -215,24 +215,31 @@ export class TreeDataDisplayComponent {
     //    node.
     // 4. If the graph is currently being displayed (i.e. this._rootNode is set) then rebuild the d3 hierarchy as well.
 
+    console.log("Begin informRebuild")
+    console.log(new Set(graphDoc.treeNodes).size)
     graphDoc.forEachTreeNode((treeNode) => {
+      console.log("Begin ForEachTreeNode")
       for (let childTreeNode of treeNode.children) {
         let childGraphDoc = childTreeNode.graphDocument;
         if (!graphDoc.linksTo.has(childGraphDoc)) {
-          treeNode.children.delete(childTreeNode)
+          console.log(treeNode.children.delete(childTreeNode))
+          childGraphDoc.unlinkNode(childTreeNode)
         }
       }
-      if (treeNode.children.size != graphDoc.linksTo.size) {
+      if (treeNode.children.size != graphDoc.linksTo.size && treeNode.expanded) {
         for (let childGraphDoc of graphDoc.linksTo) {
           if (!Array.from(treeNode.children).some((childTreeNode) => childTreeNode.graphDocument === childGraphDoc)) {
             let newTreeNodeChild = new TreeNode(childGraphDoc);
             treeNode.children.add(newTreeNodeChild)
+            console.log(`Creating new link on ${childGraphDoc.nodeTitle}`, childGraphDoc, newTreeNodeChild)
           }
         }
       }
+      console.log("End ForEachTreeNode")
     })
     if (this._rootNode) {
       this.buildTree()
     }
+    console.log("End informRebuild")
   }
 }

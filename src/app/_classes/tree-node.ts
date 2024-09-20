@@ -37,7 +37,6 @@ export class TreeNode {
       })
       this._expanded = true;
     }
-    console.trace(this.graphDocument.nodeTitle)
   }
 
   contract() {
