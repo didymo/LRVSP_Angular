@@ -33,7 +33,7 @@
        #nodes *ngFor="let node of _rootNode?.flatten(); index as i" matTooltip="{{node.graphDocument.nodeTitle}}"
     >
       <path attr.d="M{{-svgPillLength}},{{-svgPillRadius}} H 0 a {{svgPillRadius}} {{svgPillRadius}} 0 0 1 0 {{2 * svgPillRadius}} H {{-svgPillLength}} a {{svgPillRadius}} {{svgPillRadius}} 0 0 1 0 {{-svgPillRadius * 2}} Z"
-            stroke="black" attr.fill="{{node.hover ? 'red' : 'white'}}"
+            stroke="black" [attr.fill]="node.highlightColour(criticalPath)"
             (click)="pillClicked($event, node)"
             (mouseover)="nodeHover($event, node)"
             (mouseleave)="nodeLeave($event, node)"/>

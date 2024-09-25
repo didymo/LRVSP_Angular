@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://api.lrvs.local',
+  apiUrl: 'http://api.documap.local',
   apiEndpoints: {
     allDocs: 'docs',
     linksForDoc: 'links',

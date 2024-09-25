@@ -38,6 +38,7 @@ export class TreeDataDisplayComponent {
     return [this.svgScale * 1000, this.svgScale *1000]
   }
   protected linkGenerator = d3.linkRadial()
+  protected criticalPath: Set<TreeNode> = new Set();
 
   @Output() nodeSelected = new EventEmitter<TreeNode>
 
@@ -98,12 +99,20 @@ export class TreeDataDisplayComponent {
 
   nodeClick(node: TreeNode) {
     node.toggleExpanded()
+    this.criticalPath.clear()
+    node.hierarchy?.ancestors()?.forEach((ancestor) => {
+      this.criticalPath.add(ancestor.data)
+    })
     this.buildTree()
     this.rollToNode(node)
   }
 
   pillClicked(event: MouseEvent, node: TreeNode) {
     this.nodeSelected.emit(node)
+    this.criticalPath.clear()
+    node.hierarchy?.ancestors()?.forEach((ancestor) => {
+      this.criticalPath.add(ancestor.data)
+    })
     this.rollToNode(node)
   }
 

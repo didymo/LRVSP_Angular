@@ -8,6 +8,6 @@ export const environment = {
   },
   requestScheduler: {
     maxActiveRequests: 10,
-    minimumRequestTimeDelta: 1
+    minimumRequestTimeDelta: 120
   }
 };

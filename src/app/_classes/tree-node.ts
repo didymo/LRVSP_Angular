@@ -1,4 +1,6 @@
 import {GraphDocument} from "./graph-document";
+import {Color} from "d3";
+import * as d3 from "d3"
 
 export class TreeNode {
   readonly graphDocument: GraphDocument;
@@ -6,10 +8,22 @@ export class TreeNode {
   private _expanded: boolean = false;
   private _hover: boolean = false;
   hierarchy: d3.HierarchyNode<TreeNode> | undefined
+  private hoverColour: Color = d3.rgb(255, 0, 0);
+  private pathColour: Color = d3.rgb(255, 255, 0);
 
   constructor(doc: GraphDocument) {
     this.graphDocument = doc;
     this.graphDocument.linkNewNode(this)
+  }
+
+  highlightColour(criticalPath: Set<TreeNode>) {
+    if (criticalPath.has(this)) {
+      return this.pathColour
+    }
+    if (this._hover) {
+      return this.hoverColour
+    }
+    return d3.rgb(0, 0, 0, 0)
   }
 
   get children() {
