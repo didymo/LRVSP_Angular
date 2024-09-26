@@ -12,14 +12,25 @@ export class RequestSchedulerService {
   private handledRequests: ScheduledRequest<any>[] = []
   private rejectedRequests: ScheduledRequest<any>[] = []
   private registeredRequests: DefaultableMap<URL, ScheduledRequest<any>> = new DefaultableMap();
-  private activeRequestCount: number = 0
+  private _activeRequestCount: number = 0
+  private get activeRequestCount() {
+    return this._activeRequestCount
+  }
+  private set activeRequestCount(newval: number) {
+    let was = this._activeRequestCount
+    this._activeRequestCount = newval
+    let now = this._activeRequestCount
+    if (was >= environment.requestScheduler.maxActiveRequests && now < environment.requestScheduler.maxActiveRequests) {
+      setTimeout(this.requestHandlerTick.bind(this), 0)
+    }
+  }
 
 
   constructor(private httpClient: HttpClient) {
     // Every second, we can have up to 10 requests in flight. serviceRequestTick() is the function that fires each
     // second to handle bookkeeping and dispatching
     this.requestHandlerTick()
-    setInterval(this.requestHandlerTick.bind(this), 1000)
+    setInterval(this.requestHandlerTick.bind(this), 100)
   }
 
   public registerRequest<T>(url: URL, repeat: boolean): Observable<T> {
@@ -66,7 +77,7 @@ export class RequestSchedulerService {
   private requestHandlerTick() {
     //Sort queued requests
     this.queuedRequests.sort((a, b) => {
-      return Number(a.fresh) - Number(b.fresh) || b.lastRun - a.lastRun
+      return Number(a.fresh) - Number(b.fresh) || a.lastRun - b.lastRun
     })
 
     //While we have slots available, and also have requests left to process, try to process requests
@@ -96,7 +107,6 @@ export class RequestSchedulerService {
       this.queuedRequests.push(request)
     })
     this.rejectedRequests = []
-
   }
 }
 
