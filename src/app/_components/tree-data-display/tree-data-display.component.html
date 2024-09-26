@@ -34,12 +34,12 @@
     >
       <path attr.d="M{{-svgPillLength}},{{-svgPillRadius}} H 0 a {{svgPillRadius}} {{svgPillRadius}} 0 0 1 0 {{2 * svgPillRadius}} H {{-svgPillLength}} a {{svgPillRadius}} {{svgPillRadius}} 0 0 1 0 {{-svgPillRadius * 2}} Z"
             stroke="black" [attr.fill]="node.highlightColour(criticalPath)"
-            (click)="pillClicked($event, node)"
+            (click)="pillClicked(node)"
             (mouseover)="nodeHover($event, node)"
             (mouseleave)="nodeLeave($event, node)"/>
       <circle attr.r="{{svgPillRadius/2}}" cx="0" cy="0" stroke="black" (mousedown)="nodeClick(node)"/>
       <text font-size="7" dominant-baseline="central"
-            (click)="pillClicked($event, node)"
+            (click)="pillClicked(node)"
             (mouseover)="nodeHover($event, node)"
             (mouseleave)="nodeLeave($event, node)">
         <textPath *ngIf="getNodeRotation(node)  <= 90 || getNodeRotation(node) >= 270" href="#textpath" >{{node.hierarchy?.data?.graphDocument?.nodeTitle}}</textPath>

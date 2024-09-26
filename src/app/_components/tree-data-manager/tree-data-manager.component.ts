@@ -59,24 +59,6 @@ export class TreeDataManagerComponent {
             this.selectorComponent.setSelectedValue(this.nodes.get(this.preselectId)!)
             this.dropDownSelect(this.nodes.get(this.preselectId)!)
           }
-          this.graphDataService.getLinks(value.data.id).subscribe((value) => {
-            let link = value.data
-            switch (value.operation) {
-              case Operation.CREATE:
-                if (value.data.toDoc !== value.data.fromDoc) {
-                  let fromDoc = this.nodes.getOrSetDefaultDefer(link.fromDoc, () => new GraphDocument(link.fromDoc, '', false, new Set(), true))
-                  let toDoc = this.nodes.getOrSetDefaultDefer(link.toDoc, () => new GraphDocument(link.toDoc, '', false, new Set(), true))
-                  fromDoc.linksTo.add(toDoc)
-                  this.displayComponent.informRebuildRequired(fromDoc)
-                }
-                break
-              case Operation.DELETE:
-                if (this.nodes.has(link.fromDoc) && this.nodes.has(link.toDoc)) {
-                  this.nodes.get(link.fromDoc)!.linksTo.delete(this.nodes.get(link.toDoc)!)
-                  this.displayComponent.informRebuildRequired(this.nodes.get(link.fromDoc)!)
-                }
-            }
-          })
           break
         case Operation.UPDATE:
           if (this.nodes.has(value.data.id)) {
@@ -103,8 +85,47 @@ export class TreeDataManagerComponent {
     for (let graphDoc of this.nodes.values()) {
       graphDoc.clearTreeNodes()
     }
+    this.graphDataService.getLinks(doc.nodeId).subscribe((value) => {
+      let link = value.data
+      switch (value.operation) {
+        case Operation.CREATE:
+          if (value.data.toDoc !== value.data.fromDoc) {
+            let fromDoc = this.nodes.getOrSetDefaultDefer(link.fromDoc, () => new GraphDocument(link.fromDoc, '', false, new Set(), true))
+            let toDoc = this.nodes.getOrSetDefaultDefer(link.toDoc, () => new GraphDocument(link.toDoc, '', false, new Set(), true))
+            fromDoc.linksTo.add(toDoc)
+            this.displayComponent.informRebuildRequired(fromDoc)
+          }
+          break
+        case Operation.DELETE:
+          if (this.nodes.has(link.fromDoc) && this.nodes.has(link.toDoc)) {
+            this.nodes.get(link.fromDoc)!.linksTo.delete(this.nodes.get(link.toDoc)!)
+            this.displayComponent.informRebuildRequired(this.nodes.get(link.fromDoc)!)
+          }
+      }
+    })
     let newTreeNode =  new TreeNode(doc)
     this.displayComponent.rootNode = newTreeNode
+  }
+
+  nodeExpanded(node: TreeNode) {
+    this.graphDataService.getLinks(node.graphDocument.nodeId).subscribe((value) => {
+      let link = value.data
+      switch (value.operation) {
+        case Operation.CREATE:
+          if (value.data.toDoc !== value.data.fromDoc) {
+            let fromDoc = this.nodes.getOrSetDefaultDefer(link.fromDoc, () => new GraphDocument(link.fromDoc, '', false, new Set(), true))
+            let toDoc = this.nodes.getOrSetDefaultDefer(link.toDoc, () => new GraphDocument(link.toDoc, '', false, new Set(), true))
+            fromDoc.linksTo.add(toDoc)
+            this.displayComponent.informRebuildRequired(fromDoc)
+          }
+          break
+        case Operation.DELETE:
+          if (this.nodes.has(link.fromDoc) && this.nodes.has(link.toDoc)) {
+            this.nodes.get(link.fromDoc)!.linksTo.delete(this.nodes.get(link.toDoc)!)
+            this.displayComponent.informRebuildRequired(this.nodes.get(link.fromDoc)!)
+          }
+      }
+    })
   }
 
   nodeSelected(node: TreeNode) {

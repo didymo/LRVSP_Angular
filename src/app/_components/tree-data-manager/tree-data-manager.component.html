@@ -19,7 +19,7 @@
     <div class="sidenavActivator" (click)="selectorSidebar.open()">
       <span>&gt;</span>
     </div>
-    <app-tree-data-display (nodeSelected)="nodeSelected($event)"/>
+    <app-tree-data-display (nodeSelected)="nodeSelected($event)" (nodeExpanded)="nodeExpanded($event)"/>
     <div class="sidenavActivator" (click)="detailSidebar.open()">
       <span>&lt;</span>
     </div>

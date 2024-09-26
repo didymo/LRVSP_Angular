@@ -41,6 +41,7 @@ export class TreeDataDisplayComponent {
   protected criticalPath: Set<TreeNode> = new Set();
 
   @Output() nodeSelected = new EventEmitter<TreeNode>
+  @Output() nodeExpanded = new EventEmitter<TreeNode>
 
   @ViewChild('canvas') protected svg!: ElementRef<SVGGraphicsElement>;
   protected mouseMovementInfo: {target: TreeNode | null; x: number, y: number} | null = null
@@ -99,16 +100,17 @@ export class TreeDataDisplayComponent {
 
   nodeClick(node: TreeNode) {
     node.toggleExpanded()
-    this.criticalPath.clear()
-    node.hierarchy?.ancestors()?.forEach((ancestor) => {
-      this.criticalPath.add(ancestor.data)
-    })
+    this.nodeExpanded.emit(node)
+    this.expressInterest(node)
     this.buildTree()
-    this.rollToNode(node)
   }
 
-  pillClicked(event: MouseEvent, node: TreeNode) {
+  pillClicked(node: TreeNode) {
     this.nodeSelected.emit(node)
+    this.expressInterest(node)
+  }
+
+  expressInterest(node: TreeNode) {
     this.criticalPath.clear()
     node.hierarchy?.ancestors()?.forEach((ancestor) => {
       this.criticalPath.add(ancestor.data)
