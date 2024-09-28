@@ -1,0 +1,81 @@
+/* Ensure the container takes full viewport height */
+.login-container {
+  background-image: url('/assets/Login_Page_BackGround.jpg');
+  background-size: cover; /* Ensures the image covers the entire container */
+  background-position: center; /* Centers the image */
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+.login-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+  z-index: 1;
+}
+
+.login-logo img {
+  max-width: 350px; /* Adjust as needed */
+  margin-bottom: 0px; /* Space between logo and form */
+}
+
+
+.login-form {
+  position: relative;
+  z-index: 2;
+  background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white for the form background */
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 10px; /* Space between form elements */
+}
+h2 {
+  font-size: 24px;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.btn {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-primary {
+
+  background-color: #007bff; /* Primary button color */
+  color: #fff;
+
+}
+
+.btn-secondary {
+  background-color: #50606e; /* Primary button color */
+  color: #fefefa;
+  text-align: center;
+  width: 10%;
+}
+

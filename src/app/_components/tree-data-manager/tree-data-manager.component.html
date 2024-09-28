@@ -1,0 +1,27 @@
+<mat-sidenav-container hasBackdrop="false">
+  <mat-sidenav opened="true" #selectorSidebar>
+    <div class="sidenavFlexbox">
+      <app-tree-data-selector [options]="nodes" (selectedOption)="dropDownSelect($event)"/>
+      <div class="sidenavActivator" (click)="selectorSidebar.close()">
+        <span>&lt;</span>
+      </div>
+    </div>
+  </mat-sidenav>
+  <mat-sidenav position="end" mode="side" #detailSidebar>
+    <div class="sidenavFlexbox">
+      <div class="sidenavActivator" (click)="detailSidebar.close()">
+        <span>&gt;</span>
+      </div>
+      <app-tree-data-detail [node]="detailNode" [details]="detailNodeDetails" (expandSelected)="displayComponent.nodeClick($event)"/>
+    </div>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div class="sidenavActivator" (click)="selectorSidebar.open()">
+      <span>&gt;</span>
+    </div>
+    <app-tree-data-display (nodeSelected)="nodeSelected($event)" (nodeExpanded)="nodeExpanded($event)"/>
+    <div class="sidenavActivator" (click)="detailSidebar.open()">
+      <span>&lt;</span>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

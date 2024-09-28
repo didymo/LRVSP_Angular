@@ -1,0 +1,10 @@
+<div class="vbox">
+  <div id="detailHeader">
+    <span>{{node?.graphDocument?.nodeTitle}}</span>
+    <hr />
+  </div>
+  <div class="hbox">
+    <button mat-flat-button (click)="expandSelected.emit(node!)">Explore Node</button>
+    <a mat-flat-button href="{{environment.apiUrl + details?.pdf}}">View File</a>
+  </div>
+</div>

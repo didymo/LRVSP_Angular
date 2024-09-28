@@ -1,0 +1,113 @@
+/* Anngimation styles */
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.logo {
+  animation: fadeInScale 2s ease-out;
+}
+
+/* Header styles */
+nav {
+  background-color: #a3c1d1;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 25px;
+}
+
+nav img {
+  height: 40px;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  font-weight: bold;
+  color: #000;
+}
+
+nav ul li a:hover {
+  text-decoration: underline;
+}
+
+nav ul li .btn {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+}
+
+nav ul li .btn:hover {
+  background-color: #0056b3;
+}
+
+/* Ensure the container takes full viewport height */
+.home-container {
+  background-image: url('/assets/paperbg.jpg');
+  background-size: cover; /* Ensures the image covers the entire container */
+  background-position: center; /* Centers the image */
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+
+}
+
+
+.home-container img {
+  max-width: 400px;
+  margin-bottom: 20px;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  //margin-bottom: 20px;
+}
+
+.search-bar {
+  padding: 10px;
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 5px 0 0 5px;
+}
+
+.search-button {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 0 5px 5px 0;
+  background-color: #a3c1d1;
+}
+
+.search-button i {
+  font-size: 16px;
+}
+
+p {
+  font-size: 18px;
+  color: #333;
+  max-width: 600px;
+}
+
+ul li a {
+  text-decoration: none;
+  font-weight: bold;
+  color: #000;
+  font-size: 16px;
+}
