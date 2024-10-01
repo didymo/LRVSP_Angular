@@ -9,7 +9,10 @@
 
   </ul>
   <ul class="nav-buttons">
-    <li><a routerLink="/login" class="btn btn-primary">Login</a></li>
+    <li>
+      <a *ngIf="!auth.isLoggedIn();else logged_in" routerLink="/login" class="btn btn-primary">Login</a>
+      <ng-template #logged_in><a (click)="auth.logout()" class="btn btn-primary">Logout</a></ng-template>
+    </li>
   </ul>
 </nav>
 

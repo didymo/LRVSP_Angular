@@ -4,12 +4,12 @@
   </div>
   <div class="login-form">
     <h2>Log in using your DocuMap UserID & Password</h2>
-    <form>
+    <form (ngSubmit)="onSubmit()" [formGroup]="formGroup">
       <div class="form-group">
-        <input type="text" placeholder="User ID" required>
-        <input type="password" placeholder="Password" required> <!-- Changed type to password -->
+        <input type="text" placeholder="User ID" required formControlName="userid">
+        <input type="password" placeholder="Password" required formControlName="password"> <!-- Changed type to password -->
       </div>
-      <button type="submit" class="btn btn-primary">Login</button>
+      <button (click)="onSubmit()" type="submit" class="btn btn-primary" [disabled]="!formGroup.valid">Login</button>
     </form>
     <!-- Back to Home Button -->
     </div>
