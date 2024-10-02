@@ -84,9 +84,9 @@ export class RequestSchedulerService {
     while (this.activeRequestCount < environment.requestScheduler.maxActiveRequests && this.queuedRequests.length > 0) {
       let request = this.queuedRequests.shift()!;
       let runDelta = Date.now() - request.lastRun;
-      console.log(request.fresh, runDelta)
+      // console.log(request.fresh, runDelta)
       if (!request.fresh && runDelta < environment.requestScheduler.minimumRequestTimeDelta * 1000) {
-	console.log("Rejected request: ", request)
+	      // console.log("Rejected request: ", request)
         this.rejectedRequests.push(request)
         continue;
       }

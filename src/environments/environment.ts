@@ -9,5 +9,11 @@ export const environment = {
   requestScheduler: {
     maxActiveRequests: 10,
     minimumRequestTimeDelta: 1000
+  },
+  auth: {
+    clientId: '',
+    clientSecret: '',
+    csrfTokenUrl: '',
+    oauthTokenUrl: '',
   }
 };

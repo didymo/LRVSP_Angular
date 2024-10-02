@@ -9,5 +9,11 @@ export const environment = {
   requestScheduler: {
     maxActiveRequests: 10,
     minimumRequestTimeDelta: 120
+  },
+  auth: {
+    clientId: '',
+    clientSecret: '',
+    csrfTokenUrl: 'http://api.documap.local/session/token',
+    oauthTokenUrl: 'http://api.documap.local/oauth/token',
   }
 };

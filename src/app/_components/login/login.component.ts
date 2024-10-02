@@ -1,13 +1,17 @@
 import { Component } from '@angular/core';
-import {RouterLink} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
 import { trigger, transition, style, animate } from '@angular/animations';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {AuthService} from "../../_services/auth.service";
 @Component({
   selector: 'app-register',
   standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   imports: [
-    RouterLink
+    RouterLink,
+    ReactiveFormsModule,
+    FormsModule
   ],
   animations: [
     trigger('fadeIn', [
@@ -19,5 +23,20 @@ import { trigger, transition, style, animate } from '@angular/animations';
   ]
 })
 export class LoginComponent {
+  formGroup = new FormGroup({
+    userid: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required])
+  })
 
+  constructor(private authService: AuthService, private router: Router) {
+  }
+
+  onSubmit() {
+    const formValues = this.formGroup.value;
+    this.authService.login(formValues.userid!, formValues.password!).subscribe(
+      (r) => {
+        this.router.navigate(['/app'])
+      }
+    )
+  }
 }

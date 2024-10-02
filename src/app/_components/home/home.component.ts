@@ -14,6 +14,8 @@ import {Operation} from "../../_enums/opperation";
 import {DefaultableMap} from "../../_classes/defaultable-map";
 import {MatButton, MatIconButton} from "@angular/material/button";
 import {routes} from "../../app.routes";
+import {AuthService} from "../../_services/auth.service";
+import {NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-home',
@@ -32,7 +34,8 @@ import {routes} from "../../app.routes";
     MatButton,
     MatIconButton,
     MatPrefix,
-    MatSuffix
+    MatSuffix,
+    NgIf
   ],
   styleUrls: ['./home.component.scss'],
 
@@ -59,7 +62,7 @@ export class HomeComponent {
 
   options: DefaultableMap<string, DrupalDoc> = new DefaultableMap()
 
-  constructor(private graphData: GraphDataService, protected router: Router) {
+  constructor(private graphData: GraphDataService, protected router: Router, protected auth: AuthService) {
     this.formControl.valueChanges.subscribe((val) => {
       if (typeof val === 'string' || val === null) {
         this.filterVal = val;

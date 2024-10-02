@@ -6,6 +6,9 @@
     "LegislativeRelationshipVisualisation": {
       "projectType": "application",
       "schematics": {
+        "@schematics/angular:guard": {
+          "implements": ["CanActivate"]
+        },
         "@schematics/angular:component": {
           "style": "scss"
         }
