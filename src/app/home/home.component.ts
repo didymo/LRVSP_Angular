@@ -30,4 +30,6 @@ import { trigger, transition, style, animate } from '@angular/animations';
 export class HomeComponent {
   protected readonly faSearch = faSearch;
   protected readonly faCog = faCog;
+
+
 }

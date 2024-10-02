@@ -1,27 +1,44 @@
 <nav>
-  <img src="assets/home-icon.png" alt="DocuMap Logo" class="icon">
+  <img src="assets/documap-logo.png" alt="DocuMap Logo" class="icon">
   <ul class="nav-links">
     <li><a routerLink="/">Home</a></li>
     <li><a routerLink="/feature">Features</a></li>
     <li><a routerLink="/support">Support</a></li>
     <li><a routerLink="/setting">Settings</a></li>
-
-
   </ul>
   <ul class="nav-buttons">
     <li><a routerLink="/login" class="btn btn-primary">Login</a></li>
   </ul>
 </nav>
+
 <div class="support-container">
   <h1>Support</h1>
   <p>Welcome to the DocuMap Support Page. Here you will find the user manual and answers to common questions.</p>
 
-  <h2>User Manual</h2>
-  <p>This section will guide you through the basic and advanced features of DocuMap.</p>
+  <!-- User Manual Section -->
+  <section class="user-manual">
+    <h2>User Manual</h2>
+    <p>This section will guide you through the basic and advanced features of DocuMap.</p>
+    <ul class="manual-links">
+      <li><a href="#getting-started">Getting Started</a></li>
+      <li><a href="#advanced-features">Advanced Features</a></li>
+      <li><a href="#troubleshooting">Troubleshooting</a></li>
+    </ul>
+  </section>
 
-  <h2>FAQs</h2>
-  <p>Here are some frequently asked questions to help you troubleshoot common issues:</p>
-   <!-- Back to Home Button -->
-   <a routerLink="/" class="btn btn-secondary">Back to Home</a>
-  <!-- Add more sections as needed -->
+  <!-- FAQs Section -->
+  <section class="faq">
+    <h2>Frequently Asked Questions (FAQs)</h2>
+    <div class="faq-item">
+      <h3>How do I upload a PDF or XML file?</h3>
+      <p>To upload a file, simply click the "Upload" button on the homepage and follow the prompts.</p>
+    </div>
+    <div class="faq-item">
+      <h3>How do I generate a mind map from my document?</h3>
+      <p>After uploading your document, DocuMap will automatically process it and generate an interactive mind map.</p>
+    </div>
+  </section>
+
+  <!-- Back to Home Button -->
+  <a routerLink="/" class="btn btn-secondary">Back to Home</a>
 </div>

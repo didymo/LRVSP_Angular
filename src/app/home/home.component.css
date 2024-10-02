@@ -1,4 +1,4 @@
-/* Anngimation styles */
+/* Animation styles */
 @keyframes fadeInScale {
   0% {
     opacity: 0;
@@ -10,11 +10,44 @@
   }
 }
 
+/* Slide animations */
+@keyframes slideInFromTop {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromBottom {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Apply animation to the logo */
 .logo {
   animation: fadeInScale 2s ease-out;
 }
 
-/* Header styles */
+/* Header (Navigation) styles */
 nav {
   background-color: #a3c1d1;
   padding: 15px 30px;
@@ -22,10 +55,11 @@ nav {
   justify-content: space-between;
   align-items: center;
   height: 25px;
+  animation: slideInFromTop 0.5s ease-out;
 }
 
 nav img {
-  height: 40px;
+  height: 100px;
 }
 
 nav ul {
@@ -38,10 +72,14 @@ nav ul li a {
   text-decoration: none;
   font-weight: bold;
   color: #000;
+  opacity: 0.7;
+  transition: opacity 0.3s ease, color 0.3s ease;
+  animation: fadeIn 1.2s ease-out;
 }
 
 nav ul li a:hover {
-  text-decoration: underline;
+  opacity: 1;
+  color: #007bff; /* Lighter blue on hover */
 }
 
 nav ul li .btn {
@@ -49,65 +87,124 @@ nav ul li .btn {
   background-color: #007bff;
   color: white;
   border-radius: 5px;
+  opacity: 0.8;
+  transition: opacity 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
 }
 
 nav ul li .btn:hover {
   background-color: #0056b3;
+  opacity: 1;
+  transform: translateY(-5px); /* Slight lift on hover */
 }
 
-/* Ensure the container takes full viewport height */
+/* Home Container */
 .home-container {
   background-image: url('/assets/paperbg.jpg');
-  background-size: cover; /* Ensures the image covers the entire container */
-  background-position: center; /* Centers the image */
+  background-size: cover;
+  background-position: center;
   height: 92.5vh;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   text-align: center;
-
+  animation: slideInFromBottom 2s ease-out; /* Page loads with a slide in */
 }
-
 
 .home-container img {
   max-width: 400px;
   margin-bottom: 20px;
+  animation: fadeInScale 2s ease-out;
 }
 
+/* Container for search bar and tooltip */
 .search-container {
+  position: relative; /* Allows tooltip to be positioned relative to this container */
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .search-bar {
-  padding: 10px;
-  width: 300px;
-  border: 1px solid #ccc;
+  padding: 12px;
+  width: 350px;
+  font-size: 16px;
+  border: 2px solid #64597b;
   border-radius: 5px 0 0 5px;
+  color: #333;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.search-bar:focus {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  transform: scale(1.02); /* Slight zoom on focus */
 }
 
 .search-button {
-  padding: 10px;
-  border: 1px solid #ccc;
+  padding: 14px;
+  border: 2px solid #64597b;
   border-radius: 0 5px 5px 0;
-  background-color: #a3c1d1;
+  background-color: #a3c1da;
+  color: #fff;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: #50606e;
+  transform: translateY(-3px); /* Subtle lift on hover */
 }
 
 .search-button i {
-  font-size: 16px;
-}
-
-p {
   font-size: 18px;
-  color: #333;
-  max-width: 600px;
 }
 
-ul li a {
-  text-decoration: none;
-  font-weight: bold;
-  color: #000;
-  font-size: 16px;
+/* Tooltip for help message */
+.help-popup {
+  position: absolute;
+  top: -100px; /* Position above the search bar */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #fefefa;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  z-index: 10;
+  width: 250px;
+  visibility: visible; /* Show tooltip by default */
+  opacity: 1;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  animation: hideTooltip 5s forwards; /* Hide tooltip after 5 seconds */
+}
+
+/* Arrow for tooltip */
+.help-arrow {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #fefefa;
+}
+
+/* Tooltip reappears when hovering over the search container */
+.search-container:hover .help-popup {
+  opacity: 1;
+  visibility: visible;
+  animation: none; /* Disable animation on hover */
+}
+
+/* Fade-out animation to hide the tooltip after 5 seconds */
+@keyframes hideTooltip {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
 }
