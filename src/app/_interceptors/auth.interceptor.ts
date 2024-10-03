@@ -7,6 +7,14 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const authToken = authService.getAuthTokenFromStorage();
 
+  // If the request is already trying to refresh, then don't touch it.
+  console.log("In Auth Interceptor")
+  if (req.body !== null && typeof req.body === 'string' && new URLSearchParams(req.body).has('refresh_token')) {
+    console.log("Skipping full auth")
+    return next(req)
+  }
+  console.log("Continuing with full auth")
+
   if (authToken) {
     req = req.clone({
       setHeaders: {
