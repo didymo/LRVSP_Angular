@@ -122,7 +122,7 @@ export class AuthService {
   }
 
   refreshTokenMethod(): Observable<any> {
-    const url = environment.apiUrl;
+    const url = environment.auth.oauthTokenUrl;
     const body = new URLSearchParams();
     body.set('grant_type', 'refresh_token');
     body.set('client_id', environment.auth.clientId);

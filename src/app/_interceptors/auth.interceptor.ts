@@ -19,8 +19,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     catchError(error => {
       console.log('Caught error:', error); // Log the error
 
-      // Temporary workaround - backend return 403
-      if (error.status === 401 || error.status === 403) {
+      if (error.status === 401) {
         console.log('401 error detected, attempting to refresh token'); // Log the detection of a 401 error
 
         return authService.refreshTokenMethod().pipe(
