@@ -13,6 +13,10 @@ export const routes: Routes = [
   {path: 'support', component: SupportComponent},
   {path: 'app', component: TreeDataManagerComponent},
   {path: 'app/:preselect', component: TreeDataManagerComponent},
+// Due to time constraints, the code activated by this route
+// could not be adequately tested. It has been deactivatd via
+// comment, and the code has been left in place.
+/*
   {
     path: 'fileManagement',
     component: FileManagementComponent,
@@ -26,4 +30,5 @@ export const routes: Routes = [
       component: FileUploadComponent
     }],
   }
+*/
 ];
