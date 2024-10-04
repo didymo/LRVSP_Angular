@@ -12,23 +12,14 @@
     <li><a routerLink="/login" class="btn btn-primary">Login</a></li>
   </ul>
 </nav>
-
 <div class="home-container text-center">
   <img src="assets/documap-logo.png" alt="DocuMap Logo" class="logo">
-  <mat-autocomplete #auto=matAutocomplete [displayWith]="displayFn" panelWidth="500px">
-    @for (option of filteredOptions(); track option) {
-      <mat-option [value]="option">
-        {{option.title}}
-      </mat-option>
-    }
-  </mat-autocomplete>
+
   <div class="search-container">
-    <mat-form-field style="width: 500px;">
-      <input type="text" matInput [formControl]="formControl" [matAutocomplete]="auto">
-      <button matSuffix mat-icon-button (click)="navigateApp()">
-        <fa-icon [icon]="faSearch"></fa-icon>
-      </button>
-    </mat-form-field>
+    <input type="text" class="search-bar" placeholder="Search public files" id="search-bar">
+    <button class="search-button">
+      <fa-icon [icon]="faSearch"></fa-icon>
+    </button>
 
     <!-- Help Popup with Arrow pointing to the search bar -->
     <div class="help-popup" id="helpPopup">
@@ -38,6 +29,6 @@
       </div>
     </div>
   </div>
-  <p>Welcome to DocuMap, your comprehensive tool for visualizing relationships and mapping policy documents with ease.</p>
 
+  <p>Welcome to DocuMap, your comprehensive tool for visualizing relationships and mapping policy documents with ease.</p>
 </div>

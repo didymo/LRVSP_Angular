@@ -57,7 +57,6 @@ nav {
   animation: slideInFromTop 0.5s ease-out;
 }
 
-
 nav img {
   height: 100px;
 }
@@ -93,90 +92,93 @@ nav ul li .btn:hover {
   background-color: #0056b3;
   opacity: 1; /* Fully visible on hover */
 }
-/* Support Container */
-.support-container {
-  padding: 40px;
-  max-width: 900px;
+/* Feature Page */
+.feature-page {
+  padding: 50px;
+  background-color: #f4f4f9;
+}
+
+/* Intro Section */
+.intro {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.intro h1 {
+  font-size: 42px;
+  color: #64597b; /* Primary color */
+  margin-bottom: 20px;
+}
+
+.intro p {
+  font-size: 20px;
+  color: #444;
+  max-width: 700px;
   margin: 0 auto;
-  background-color: #fefefa;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
 }
 
-/* Main Support Heading */
-.support-container h1 {
-  color: #64597b;
-  text-align: center;
-  font-size: 36px;
-  margin-bottom: 20px;
+/* Features List */
+.features-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
 }
 
-/* Section Headings */
-.support-container h2 {
-  color: #50606e;
-  font-size: 28px;
-  margin-top: 40px;
-  margin-bottom: 20px;
+/* Feature Item */
+.feature-item {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Section Paragraphs */
-.support-container p {
-  color: #333;
+.feature-item:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+.feature-item h2 {
+  font-size: 26px;
+  color: #64597b; /* Primary color */
+  margin-bottom: 15px;
+}
+
+.feature-item p {
   font-size: 18px;
+  color: #666;
   line-height: 1.6;
-  margin-bottom: 20px;
 }
 
-/* User Manual Links */
-.manual-links {
-  list-style: none;
-  padding: 0;
-}
-
-.manual-links li {
-  margin: 10px 0;
-}
-
-.manual-links li a {
-  text-decoration: none;
-  color: #007bff;
-  transition: color 0.3s ease;
-}
-
-.manual-links li a:hover {
-  color: #0056b3;
-}
-
-/* FAQ Section */
-.faq-item {
-  margin-bottom: 20px;
-}
-
-.faq-item h3 {
-  font-size: 22px;
-  color: #64597b;
-  margin-bottom: 10px;
-}
-
-.faq-item p {
-  font-size: 16px;
-  color: #333;
-  line-height: 1.5;
-}
-
-/* Back to Home Button */
-.btn-secondary {
-  background-color: #6c757d;
-  color: white;
+/* Button Hover Effects */
+.feature-item a {
+  display: inline-block;
   padding: 10px 20px;
-  border: none;
+  margin-top: 10px;
+  font-size: 16px;
+  color: white;
+  background-color: #64597b; /* Primary color */
   border-radius: 5px;
-  cursor: pointer;
-  display: block;
-  margin: 40px auto;
-  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
 }
 
-.btn-secondary:hover {
-  background-color: #5a6268;
+.feature-item a:hover {
+  background-color: #4f4a5f;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+  .feature-item h2 {
+    font-size: 22px;
+  }
+  .feature-item p {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .features-list {
+    grid-template-columns: 1fr;
+  }
 }
