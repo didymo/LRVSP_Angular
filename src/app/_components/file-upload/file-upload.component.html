@@ -1,0 +1,35 @@
+@if (success === true) {
+  <div class="banner good">
+    <mat-icon>check_circle</mat-icon>
+    <span>Upload Successful</span>
+    <button mat-icon-button (click)="this.success = null" n><mat-icon>close</mat-icon></button>
+  </div>
+} @else if (success === false) {
+  <div class="banner bad">
+    <mat-icon>cancel</mat-icon>
+    <span>Upload Failed</span>
+    <button mat-icon-button (click)="this.success = null"><mat-icon>close</mat-icon></button>
+  </div>
+}
+<form [formGroup]="formGroup" (ngSubmit)="submitForm($event)">
+  <app-reactive-file-input
+    labelText="PDF File Upload"
+    formControlName="pdf"
+    [maxFileSize]="2"
+    [allowedFileTypes]="['application/pdf']"
+  />
+  <app-reactive-file-input
+    labelText="Processing File Upload"
+    formControlName="processing"
+    [maxFileSize]="2"
+    [allowedFileTypes]="['application/xml', 'text/xml']"
+  />
+  <div id="fileNameOverrideContainer" >
+    <mat-form-field>
+      <label for="fileNameOverride">Document File Name Override (Optional)</label>
+      <input matInput type="text" id="fileNameOverride" formControlName="fileNameOverride">
+    </mat-form-field>
+  </div>
+  <br>
+  <button [disabled]="!formGroup.valid" id="submit" mat-flat-button type="submit">Submit</button>
+</form>

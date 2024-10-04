@@ -4,7 +4,9 @@ export const environment = {
   apiEndpoints: {
     allDocs: 'docs',
     linksForDoc: 'links',
-    docDetails: 'details'
+    docDetails: 'details',
+    fileUpload: 'file/upload',
+    createDocfile: 'create'
   },
   requestScheduler: {
     maxActiveRequests: 10,

@@ -7,6 +7,14 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const authToken = authService.getAuthTokenFromStorage();
 
+  // If the request is already trying to refresh, then don't touch it.
+  console.log("In Auth Interceptor")
+  if (req.body !== null && typeof req.body === 'string' && new URLSearchParams(req.body).has('refresh_token')) {
+    console.log("Skipping full auth")
+    return next(req)
+  }
+  console.log("Continuing with full auth")
+
   if (authToken) {
     req = req.clone({
       setHeaders: {
@@ -19,8 +27,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     catchError(error => {
       console.log('Caught error:', error); // Log the error
 
-      // Temporary workaround - backend return 403
-      if (error.status === 401 || error.status === 403) {
+      if (error.status === 401) {
         console.log('401 error detected, attempting to refresh token'); // Log the detection of a 401 error
 
         return authService.refreshTokenMethod().pipe(

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {DrupalDoc} from "../_interfaces/drupal-doc";
 import {
   concatAll,
@@ -20,6 +20,7 @@ import {DataOperation} from "../_interfaces/data-operation";
 import {DrupalDocDetails} from "../_interfaces/drupal-doc-details";
 import {RequestSchedulerService} from "./request-scheduler.service";
 import {DefaultableMap} from "../_classes/defaultable-map";
+import {DrupalFileUploadResponse} from "../_interfaces/drupal-file-upload-response";
 
 
 @Injectable({
@@ -31,8 +32,6 @@ export class GraphDataService {
   private documentSubject: Subject<DataOperation<DrupalDoc>> = new Subject()
   private linkSubscriptions: DefaultableMap<String, {subscription: Subscription, subject: Subject<DataOperation<DrupalLink>>}> = new DefaultableMap()
   private linkConsumers: Subject<DataOperation<DrupalLink>>[] = []
-
-
 
   constructor(private httpClient: HttpClient, private requestScheduler: RequestSchedulerService) {
     const documentUrl = new URL(environment.apiEndpoints.allDocs, environment.apiUrl)
@@ -142,6 +141,27 @@ export class GraphDataService {
   getDocDetails(docId: string): Observable<DrupalDocDetails> {
     let url = `${environment.apiUrl}/${environment.apiEndpoints.docDetails}/${docId}`
     return this.httpClient.get<DrupalDocDetails>(url)
+  }
+
+  uploadPdfFile(file: File): Observable<DrupalFileUploadResponse> {
+    let headers = new HttpHeaders()
+      .set('Content-Type', 'application/octet-stream')
+      .set('Content-Disposition', `filename="${file.name}"`)
+    let url = `${environment.apiUrl}/${environment.apiEndpoints.fileUpload}/lrvsp_docfile/_/pdf`
+    return this.httpClient.post<DrupalFileUploadResponse>(url, file, {headers: headers})
+  }
+
+  uploadProcessingFile(file: File) {
+    let headers = new HttpHeaders()
+      .set('Content-Type', 'application/octet-stream')
+      .set('Content-Disposition', `filename="${file.name}"`)
+    let url = `${environment.apiUrl}/${environment.apiEndpoints.fileUpload}/lrvsp_docfile/_/processFile`
+    return this.httpClient.post<DrupalFileUploadResponse>(url, file, {headers: headers})
+  }
+
+  createDocFile(pdfId: number, processingId: number | null): Observable<any> {
+    let url = `${environment.apiUrl}/${environment.apiEndpoints.createDocfile}`
+    return this.httpClient.post(url, {pdfId: pdfId, processId: processingId})
   }
 }
 
