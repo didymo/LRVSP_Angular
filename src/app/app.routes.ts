@@ -11,17 +11,4 @@ export const routes: Routes = [
   {path: 'support', component: SupportComponent},
   {path: 'app', component: TreeDataManagerComponent},
   {path: 'app/:preselect', component: TreeDataManagerComponent},
-  {
-    path: 'fileManagement',
-    component: FileManagementComponent,
-    canActivate: [authGuard],
-    children: [{
-      path:'',
-      redirectTo: 'upload',
-      pathMatch: 'full'
-    },{
-      path: "upload",
-      component: FileUploadComponent
-    }],
-  }
 ];
