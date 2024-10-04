@@ -35,7 +35,7 @@ export class LoginComponent {
     const formValues = this.formGroup.value;
     this.authService.login(formValues.userid!, formValues.password!).subscribe(
       (r) => {
-        this.router.navigate(['/fileManagement'])
+        this.router.navigate(['/app'])
       }
     )
   }
