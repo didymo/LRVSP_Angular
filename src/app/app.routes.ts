@@ -3,9 +3,7 @@ import {HomeComponent} from "./_components/home/home.component";
 import {LoginComponent} from "./_components/login/login.component";
 import {SupportComponent} from "./_components/support/support.component";
 import {TreeDataManagerComponent} from "./_components/tree-data-manager/tree-data-manager.component";
-import {FileManagementComponent} from "./_components/file-management/file-management.component";
 import {authGuard} from "./_guard/auth.guard";
-import {FileUploadComponent} from "./_components/file-upload/file-upload.component";
 
 export const routes: Routes = [
   {path: '', component: HomeComponent },
