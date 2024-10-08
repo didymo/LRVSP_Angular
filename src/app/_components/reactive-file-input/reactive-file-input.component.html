@@ -1,0 +1,45 @@
+<input type="file" class="file-input"
+       [disabled]="isDisabled"
+       (change)="onFileSelected($event)" #fileUpload
+       id="fileInput"
+>
+
+<div class="file-upload" (drop)="onDrop($event)" (dragover)="onDragover($event)">
+  <span class="file-upload-label">
+    {{labelText}}
+  </span>
+  <button  class="uploadButton" type="button" mat-fab *ngIf="value === null; else other_content" (click)="fileUpload.click()">
+    <mat-icon>upload</mat-icon>
+  </button>
+  <ng-template #other_content>
+    <div class="splitButton">
+      <button type="button" class="splitButton_left" mat-fab extended (click)="fileUpload.click()">
+        <mat-icon>description</mat-icon>
+        <span>{{value?.name}}</span>
+      </button>
+      <button type="button" class="splitButton_right" mat-fab (click)="internalSetValue(null)" >
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </ng-template>
+  <div class="conditional" *ngIf="maxFileSize">
+    @if (value === null) {
+      <mat-icon class="valid_unknown">help</mat-icon>
+    } @else if (fileSizeViolate){
+      <mat-icon class="valid_bad">cancel</mat-icon>
+    } @else {
+      <mat-icon class="valid_good">check_circle</mat-icon>
+    }
+    Max size: {{maxFileSize}} MiB
+  </div>
+  <div class="conditional" *ngIf="allowedFileTypes.length > 0">
+    @if (value === null) {
+      <mat-icon class="valid_unknown">help</mat-icon>
+    } @else if (fileTypeViolate){
+      <mat-icon class="valid_bad">cancel</mat-icon>
+    } @else {
+      <mat-icon class="valid_good">check_circle</mat-icon>
+    }
+    Permitted types: {{allowedFileTypes.join(', ')}}
+  </div>
+</div>

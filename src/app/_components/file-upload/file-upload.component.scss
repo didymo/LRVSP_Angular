@@ -1,0 +1,42 @@
+#submit {
+  margin-left: 1em;
+}
+
+#fileNameOverrideContainer {
+  margin: 0 1em
+}
+
+mat-form-field {
+  width: 50%;
+}
+
+.banner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 2px solid;
+  > mat-icon {
+    margin: 0.5em
+  }
+  > * {
+    color: inherit;
+  }
+  mat-icon {
+    color: inherit;
+  }
+  button {
+    margin-left: auto;
+  }
+}
+
+.good {
+  color: #004b6f;
+  border-color: #004b6f;
+  background-color: #c9e6ff;
+}
+
+.bad {
+  color: #73342d;
+  border-color: #73342d;
+  background-color: #ffdad5;
+}

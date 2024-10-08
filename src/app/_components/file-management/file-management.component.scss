@@ -1,0 +1,21 @@
+mat-toolbar{
+  position:fixed;
+  top:0;
+  z-index: 2;
+  border-bottom: 1px solid black;
+}
+
+mat-sidenav {
+  width: auto;
+  border-top-right-radius: 0;
+}
+
+mat-sidenav-content {
+  padding-top: 64px;
+  height: 100vh;
+}
+
+app-file-upload-component {
+  height: 100%
+}
+
