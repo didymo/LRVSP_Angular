@@ -1,18 +1,15 @@
 <nav>
-  <img src="assets/home-icon.png" alt="DocuMap Logo" class="icon">
+  <img src="assets/documap-logo.png" alt="DocuMap Logo" class="icon">
   <ul class="nav-links">
     <li><a routerLink="/">Home</a></li>
-    <li><a routerLink="/features">Features</a></li>
+    <li><a routerLink="/feature">Features</a></li>
     <li><a routerLink="/support">Support</a></li>
     <li><a routerLink="/setting">Settings</a></li>
 
 
   </ul>
   <ul class="nav-buttons">
-    <li>
-      <a *ngIf="!auth.isLoggedIn();else logged_in" routerLink="/login" class="btn btn-primary">Login</a>
-      <ng-template #logged_in><a (click)="auth.logout()" class="btn btn-primary">Logout</a></ng-template>
-    </li>
+    <li><a routerLink="/login" class="btn btn-primary">Login</a></li>
   </ul>
 </nav>
 
@@ -32,6 +29,14 @@
         <fa-icon [icon]="faSearch"></fa-icon>
       </button>
     </mat-form-field>
+
+    <!-- Help Popup with Arrow pointing to the search bar -->
+    <div class="help-popup" id="helpPopup">
+      <div class="help-arrow"></div>
+      <div class="help-content">
+        <p>Type a keyword or document name and click the search icon to find public files.</p>
+      </div>
+    </div>
   </div>
   <p>Welcome to DocuMap, your comprehensive tool for visualizing relationships and mapping policy documents with ease.</p>
 
