@@ -98,20 +98,18 @@ nav ul li .btn:hover {
 }
 
 /* Home Container */
-/* Ensure the container takes full viewport height */
 .home-container {
   background-image: url('/assets/paperbg.jpg');
-  background-size: cover; /* Ensures the image covers the entire container */
-  background-position: center; /* Centers the image */
+  background-size: cover;
+  background-position: center;
   height: 92.5vh;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   text-align: center;
-
+  animation: slideInFromBottom 2s ease-out; /* Page loads with a slide in */
 }
-
 
 .home-container img {
   max-width: 400px;
@@ -124,7 +122,11 @@ nav ul li .btn:hover {
   position: relative; /* Allows tooltip to be positioned relative to this container */
   display: flex;
   align-items: center;
+<<<<<<< HEAD:src/app/_components/home/home.component.scss
+  //margin-bottom: 20px;
+=======
   margin-bottom: 30px;
+>>>>>>> Asif/Dev:src/app/home/home.component.css
 }
 
 .search-bar {
@@ -157,20 +159,7 @@ nav ul li .btn:hover {
 }
 
 .search-button i {
-  font-size: 16px;
-}
-
-p {
   font-size: 18px;
-  color: #333;
-  max-width: 600px;
-}
-
-ul li a {
-  text-decoration: none;
-  font-weight: bold;
-  color: #000;
-  font-size: 16px;
 }
 
 /* Tooltip for help message */
