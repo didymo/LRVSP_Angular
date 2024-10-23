@@ -1,8 +1,5 @@
 import { Component } from '@angular/core';
 import {Router, RouterLink} from "@angular/router";
-import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {faSearch} from "@fortawesome/free-solid-svg-icons/faSearch";
-import {faCog} from "@fortawesome/free-solid-svg-icons/faCog";
 import { trigger, transition, style, animate } from '@angular/animations';
 import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatAutocomplete, MatAutocompleteTrigger, MatOption} from "@angular/material/autocomplete";
@@ -16,6 +13,7 @@ import {MatButton, MatIconButton} from "@angular/material/button";
 import {routes} from "../../app.routes";
 import {AuthService} from "../../_services/auth.service";
 import {NgIf} from "@angular/common";
+import {MatIcon} from "@angular/material/icon";
 
 @Component({
   selector: 'app-home',
@@ -23,7 +21,6 @@ import {NgIf} from "@angular/common";
   templateUrl: './home.component.html',
   imports: [
     RouterLink,
-    FaIconComponent,
     FormsModule,
     MatAutocomplete,
     MatAutocompleteTrigger,
@@ -35,7 +32,8 @@ import {NgIf} from "@angular/common";
     MatIconButton,
     MatPrefix,
     MatSuffix,
-    NgIf
+    NgIf,
+    MatIcon
   ],
   styleUrls: ['./home.component.scss'],
 
@@ -52,8 +50,6 @@ import {NgIf} from "@angular/common";
 ]
 })
 export class HomeComponent {
-  protected readonly faSearch = faSearch;
-  protected readonly faCog = faCog;
 
   formControl = new FormControl<string | DrupalDoc | null>(null)
 

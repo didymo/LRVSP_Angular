@@ -36,6 +36,7 @@ export class LoginComponent {
     this.authService.login(formValues.userid!, formValues.password!).subscribe(
       (r) => {
         this.router.navigate(['/app'])
+        // this.router.navigate(['/fileManagement'])
       }
     )
   }

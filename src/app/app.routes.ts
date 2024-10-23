@@ -15,10 +15,13 @@ export const routes: Routes = [
   {path: 'setting', component: SettingComponent},
   {path: 'app', component: TreeDataManagerComponent},
   {path: 'app/:preselect', component: TreeDataManagerComponent},
-// Due to time constraints, the code activated by this route
-// could not be adequately tested. It has been deactivatd via
-// comment, and the code has been left in place.
-/*
+  // Due to time constraints, the code activated by this route
+  // could not be adequately tested. It has been deactivated via
+  // comment, and the code has been left in place.
+  // To re-enable, the following steps should be followed:
+  // 1. Uncomment the route below
+  // 2. Change the navigated route in LoginComponent.onSubmit()
+  /*
   {
     path: 'fileManagement',
     component: FileManagementComponent,
@@ -32,5 +35,5 @@ export const routes: Routes = [
       component: FileUploadComponent
     }],
   }
-*/
+  */
 ];
