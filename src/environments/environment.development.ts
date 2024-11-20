@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://api.documap.local',
+  apiUrl: 'https://lrvspb.didymodesigns.com.au',
   apiEndpoints: {
     allDocs: 'docs',
     linksForDoc: 'links',
@@ -13,9 +13,9 @@ export const environment = {
     minimumRequestTimeDelta: 120
   },
   auth: {
-    clientId: '',
-    clientSecret: '',
-    csrfTokenUrl: 'http://api.documap.local/session/token',
-    oauthTokenUrl: 'http://api.documap.local/oauth/token',
+    clientId: 'your-client-id',
+    clientSecret: 'your-client-secret',
+    csrfTokenUrl: 'https://lrvspb.didymodesigns.com.au/session/token',
+    oauthTokenUrl: 'https://lrvspb.didymodesigns.com.au/oauth/token',
   }
 };

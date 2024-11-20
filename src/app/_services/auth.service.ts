@@ -31,6 +31,7 @@ export class AuthService {
         'Content-Type': 'application/x-www-form-urlencoded'
       })
     };
+    console.log('The Body being sent', body);
     return this.http.post(url, body.toString(), options).pipe(
       tap((res: any) => {
         console.log('Login response:', res); // Log the entire response
