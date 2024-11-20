@@ -24,7 +24,7 @@ export class TreeDataDisplayComponent {
   protected hierarchy: d3.HierarchyNode<TreeNode> | undefined
   private treeLayout: d3.TreeLayout<TreeNode> = d3.tree()
 
-  protected angleOffset: number = 0;
+  protected angleOffset = 0;
 
   @ViewChildren('nodes') children?: QueryList<ElementRef<SVGGraphicsElement>>;
 
@@ -38,7 +38,7 @@ export class TreeDataDisplayComponent {
     return [this.svgScale * 1000, this.svgScale *1000]
   }
   protected linkGenerator = d3.linkRadial()
-  protected criticalPath: Set<TreeNode> = new Set();
+  protected criticalPath = new Set<TreeNode>();
 
   @Output() nodeSelected = new EventEmitter<TreeNode>
   @Output() nodeExpanded = new EventEmitter<TreeNode>
@@ -66,7 +66,7 @@ export class TreeDataDisplayComponent {
       // While MouseEvent's do provide layerX/layerY in all modern browsers, which should in theory be local coords, the
       // variable is non-standard, not on standards track, and just what 'layer' means is inconsistent across browsers.
       // Basically, more hassle than it's worth.
-      let point = this.getPointFromEvent(event)
+      const point = this.getPointFromEvent(event)
       this.mouseMovementInfo = {
         target: null,         // The same structure is used for app dragging and node dragging. Target being null indicated that the app was dragged.
         x: point.x,
@@ -84,7 +84,7 @@ export class TreeDataDisplayComponent {
     event.preventDefault()
     if (!this.mouseMovementInfo) return
 
-    let pointerPosition = this.getPointFromEvent(event)
+    const pointerPosition = this.getPointFromEvent(event)
     this.svgCenter[0] -= (pointerPosition.x - this.mouseMovementInfo.x)
     this.svgCenter[1] -= (pointerPosition.y - this.mouseMovementInfo.y)
   }
@@ -94,7 +94,7 @@ export class TreeDataDisplayComponent {
     this.domPoint.x = event.clientX
     this.domPoint.y = event.clientY
     // getScreenCTM gives us a transformation matrix from svg viewport coords to screen coords. Inverting it lets us go the other way.
-    let inverseMatrix = this.svg.nativeElement.getScreenCTM()!.inverse();
+    const inverseMatrix = this.svg.nativeElement.getScreenCTM()!.inverse();
     return this.domPoint.matrixTransform(inverseMatrix)
   }
 
@@ -171,8 +171,8 @@ export class TreeDataDisplayComponent {
     // The following two metrics are technically not comparable - one is a perimeter, the other a circumference, but we
     // overestimate node spacing, and by the time that it matters, the error starts to become small enough that it
     // doesn't matter
-    let nodesRequiredSpacing = this._rootNode!.children!.size *  (this.svgPillRadius * 3)
-    let nodesAvailableSpacing = 2 * Math.PI * (this.svgRingRadius - this.svgPillLength)
+    const nodesRequiredSpacing = this._rootNode!.children!.size *  (this.svgPillRadius * 3)
+    const nodesAvailableSpacing = 2 * Math.PI * (this.svgRingRadius - this.svgPillLength)
 
     if (nodesRequiredSpacing > nodesAvailableSpacing) {
       // Scale up the radius so that we have enough room if we need id
@@ -199,10 +199,10 @@ export class TreeDataDisplayComponent {
   }
 
   generateLinkPath(source: TreeNode, target: TreeNode): string | null {
-    let startCoord = this.polToCart(source.hierarchy!.y! + this.svgPillRadius, this.getNodeRotation(source))
-    let ctrlStart = this.polToCart(source.hierarchy!.y! + this.svgPillRadius + this.svgRingRadius / 4, this.getNodeRotation(source))
-    let ctrlEnd = this.polToCart(target.hierarchy!.y! - this.svgPillLength - this.svgPillRadius - this.svgRingRadius / 4, this.getNodeRotation(target))
-    let endCoord = this.polToCart(target.hierarchy!.y! - this.svgPillLength - this.svgPillRadius, this.getNodeRotation(target))
+    const startCoord = this.polToCart(source.hierarchy!.y! + this.svgPillRadius, this.getNodeRotation(source))
+    const ctrlStart = this.polToCart(source.hierarchy!.y! + this.svgPillRadius + this.svgRingRadius / 4, this.getNodeRotation(source))
+    const ctrlEnd = this.polToCart(target.hierarchy!.y! - this.svgPillLength - this.svgPillRadius - this.svgRingRadius / 4, this.getNodeRotation(target))
+    const endCoord = this.polToCart(target.hierarchy!.y! - this.svgPillLength - this.svgPillRadius, this.getNodeRotation(target))
     return `M ${startCoord.x()} ${startCoord.y()} C ${ctrlStart.x()} ${ctrlStart.y()} ${ctrlEnd.x()} ${ctrlEnd.y()} ${endCoord.x()} ${endCoord.y()}`
     // return `M ${startCoord.x()} ${startCoord.y()} L ${ctrlStart.x()} ${ctrlStart.y()} ${ctrlEnd.x()} ${ctrlEnd.y()} ${endCoord.x()} ${endCoord.y()}`
   }
@@ -230,17 +230,17 @@ export class TreeDataDisplayComponent {
     console.log(new Set(graphDoc.treeNodes).size)
     graphDoc.forEachTreeNode((treeNode) => {
       console.log("Begin ForEachTreeNode")
-      for (let childTreeNode of treeNode.children) {
-        let childGraphDoc = childTreeNode.graphDocument;
+      for (const childTreeNode of treeNode.children) {
+        const childGraphDoc = childTreeNode.graphDocument;
         if (!graphDoc.linksTo.has(childGraphDoc)) {
           console.log(treeNode.children.delete(childTreeNode))
           childGraphDoc.unlinkNode(childTreeNode)
         }
       }
       if (treeNode.children.size != graphDoc.linksTo.size && treeNode.expanded) {
-        for (let childGraphDoc of graphDoc.linksTo) {
+        for (const childGraphDoc of graphDoc.linksTo) {
           if (!Array.from(treeNode.children).some((childTreeNode) => childTreeNode.graphDocument === childGraphDoc)) {
-            let newTreeNodeChild = new TreeNode(childGraphDoc);
+            const newTreeNodeChild = new TreeNode(childGraphDoc);
             treeNode.children.add(newTreeNodeChild)
             console.log(`Creating new link on ${childGraphDoc.nodeTitle}`, childGraphDoc, newTreeNodeChild)
           }

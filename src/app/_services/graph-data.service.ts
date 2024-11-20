@@ -27,10 +27,10 @@ import {DrupalFileUploadResponse} from "../_interfaces/drupal-file-upload-respon
   providedIn: 'root'
 })
 export class GraphDataService {
-  private documentCache: Map<String, DrupalDoc> = new Map()
-  private linkCache: DefaultableMap<String, DrupalLink[]> = new DefaultableMap()
-  private documentSubject: Subject<DataOperation<DrupalDoc>> = new Subject()
-  private linkSubscriptions: DefaultableMap<String, {subscription: Subscription, subject: Subject<DataOperation<DrupalLink>>}> = new DefaultableMap()
+  private documentCache = new Map<string, DrupalDoc>()
+  private linkCache = new DefaultableMap<string, DrupalLink[]>()
+  private documentSubject = new Subject<DataOperation<DrupalDoc>>()
+  private linkSubscriptions = new DefaultableMap<string, {subscription: Subscription, subject: Subject<DataOperation<DrupalLink>>}>()
   private linkConsumers: Subject<DataOperation<DrupalLink>>[] = []
 
   constructor(private httpClient: HttpClient, private requestScheduler: RequestSchedulerService) {
@@ -95,12 +95,12 @@ export class GraphDataService {
 
   getLinks(docId: string): Observable<DataOperation<DrupalLink>> {
     const linkUrl = new URL(`${environment.apiEndpoints.linksForDoc}/${docId}`, environment.apiUrl)
-    let linkSubject: Observable<DataOperation<DrupalLink>> = this.linkSubscriptions.getOrSetDefaultDefer(docId, () => {
-      let newLinkSubject = new Subject<DataOperation<DrupalLink>>()
+    const linkSubject: Observable<DataOperation<DrupalLink>> = this.linkSubscriptions.getOrSetDefaultDefer(docId, () => {
+      const newLinkSubject = new Subject<DataOperation<DrupalLink>>()
       return {
         subscription: this.requestScheduler.registerRequest<DrupalLink[]>(linkUrl, true).pipe(
           tap((links) => {
-            let cachedLinks = this.linkCache.getOrSetDefault(docId, [])
+            const cachedLinks = this.linkCache.getOrSetDefault(docId, [])
             for (const cachedLink of cachedLinks.slice(0)) {
               if (!links.some((link) => link.fromDoc === cachedLink.fromDoc)) {
                 newLinkSubject.next({
@@ -115,7 +115,7 @@ export class GraphDataService {
           }),
           concatAll(),
           tap(link => {
-            let cachedLinks = this.linkCache.getOrSetDefault(docId, []);
+            const cachedLinks = this.linkCache.getOrSetDefault(docId, []);
             if (!cachedLinks.some((cachedLink) => cachedLink.toDoc === link.toDoc)) {
               newLinkSubject.next({
                 operation: Operation.CREATE,
@@ -139,28 +139,28 @@ export class GraphDataService {
   }
 
   getDocDetails(docId: string): Observable<DrupalDocDetails> {
-    let url = `${environment.apiUrl}/${environment.apiEndpoints.docDetails}/${docId}`
+    const url = `${environment.apiUrl}/${environment.apiEndpoints.docDetails}/${docId}`
     return this.httpClient.get<DrupalDocDetails>(url)
   }
 
   uploadPdfFile(file: File): Observable<DrupalFileUploadResponse> {
-    let headers = new HttpHeaders()
+    const headers = new HttpHeaders()
       .set('Content-Type', 'application/octet-stream')
       .set('Content-Disposition', `filename="${file.name}"`)
-    let url = `${environment.apiUrl}/${environment.apiEndpoints.fileUpload}/lrvsp_docfile/_/pdf`
+    const url = `${environment.apiUrl}/${environment.apiEndpoints.fileUpload}/lrvsp_docfile/_/pdf`
     return this.httpClient.post<DrupalFileUploadResponse>(url, file, {headers: headers})
   }
 
   uploadProcessingFile(file: File) {
-    let headers = new HttpHeaders()
+    const headers = new HttpHeaders()
       .set('Content-Type', 'application/octet-stream')
       .set('Content-Disposition', `filename="${file.name}"`)
-    let url = `${environment.apiUrl}/${environment.apiEndpoints.fileUpload}/lrvsp_docfile/_/processFile`
+    const url = `${environment.apiUrl}/${environment.apiEndpoints.fileUpload}/lrvsp_docfile/_/processFile`
     return this.httpClient.post<DrupalFileUploadResponse>(url, file, {headers: headers})
   }
 
   createDocFile(pdfId: number, processingId: number | null): Observable<any> {
-    let url = `${environment.apiUrl}/${environment.apiEndpoints.createDocfile}`
+    const url = `${environment.apiUrl}/${environment.apiEndpoints.createDocfile}`
     return this.httpClient.post(url, {pdfId: pdfId, processId: processingId})
   }
 }
@@ -188,6 +188,6 @@ function deepEquals(object1: any, object2: any) {
   return true;
 }
 
-function isObject(object: Object) {
+function isObject(object: object) {
   return object != null && typeof object === 'object';
 }

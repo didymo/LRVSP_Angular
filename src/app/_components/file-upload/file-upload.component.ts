@@ -42,14 +42,14 @@ export class FileUploadComponent {
       this.success = null;
       let pdfFile: File = this.formGroup.controls['pdf'].value
       let processingFile: File | null = this.formGroup.controls['processing'].value
-      let fileNameOverride = this.formGroup.controls['fileNameOverride'].value;
+      const fileNameOverride = this.formGroup.controls['fileNameOverride'].value;
       if (fileNameOverride !== '') {
         pdfFile = new File([pdfFile], `${fileNameOverride}.pdf`)
         if (processingFile !== null) {
           processingFile = new File([processingFile], `${fileNameOverride}.xml`)
         }
       }
-      let fileUploads = [this.graphDataService.uploadPdfFile(pdfFile)]
+      const fileUploads = [this.graphDataService.uploadPdfFile(pdfFile)]
       if (processingFile !== null) {
         fileUploads.push(this.graphDataService.uploadProcessingFile(processingFile))
       }

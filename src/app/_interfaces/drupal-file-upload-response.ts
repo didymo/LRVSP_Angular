@@ -1,27 +1,27 @@
 export interface DrupalFileUploadResponse {
-  changed: Array<{
+  changed: {
     value: string,
     format: string
-  }>,
-  created: Array<{
+  }[],
+  created: {
     value: string,
     format: string
-  }>,
-  fid: Array<{value: number}>,
-  filemime: Array<{ value: string }>,
-  filename: Array<{ value: string }>,
-  filesize: Array<{ value: number }>,
-  langcode: Array<{ value: string }>,
-  status: Array<{ value: boolean }>,
-  uid: Array<{
+  }[],
+  fid: {value: number}[],
+  filemime: { value: string }[],
+  filename: { value: string }[],
+  filesize: { value: number }[],
+  langcode: { value: string }[],
+  status: { value: boolean }[],
+  uid: {
     target_id: number,
     target_type: string,
     target_uuid: string,
     url: string
-  }>,
-  uri: Array<{
+  }[],
+  uri: {
     url: string,
     value: string
-  }>,
-  uuid: Array<{value: string}>
+  }[],
+  uuid: {value: string}[]
 }

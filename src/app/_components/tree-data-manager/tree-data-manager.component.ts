@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild} from '@angular/core';
+import {Component, Input, ViewChild, AfterViewInit} from '@angular/core';
 import {GraphDataService} from "../../_services/graph-data.service";
 import {MatSidenav, MatSidenavContainer, MatSidenavContent} from "@angular/material/sidenav";
 import {TreeDataDetailComponent} from "../tree-data-detail/tree-data-detail.component";
@@ -25,9 +25,9 @@ import {DefaultableMap} from "../../_classes/defaultable-map";
   templateUrl: './tree-data-manager.component.html',
   styleUrl: './tree-data-manager.component.scss'
 })
-export class TreeDataManagerComponent {
+export class TreeDataManagerComponent implements AfterViewInit {
   @Input() preselectId: string | undefined;
-  nodes: DefaultableMap<string, GraphDocument> = new DefaultableMap()
+  nodes = new DefaultableMap<string, GraphDocument>()
   detailNode: TreeNode | undefined
   detailNodeDetails: DrupalDocDetails | null = null
   detailSubscriber: Subscription | null = null
@@ -44,7 +44,7 @@ export class TreeDataManagerComponent {
       switch (value.operation) {
         case Operation.CREATE:
           if (this.nodes.has(value.data.id)) {
-            let existingDoc = this.nodes.get(value.data.id)!
+            const existingDoc = this.nodes.get(value.data.id)!
             existingDoc.nodeTitle = value.data.title
             existingDoc.tracked = value.data.tracked
             existingDoc.stub = false
@@ -62,7 +62,7 @@ export class TreeDataManagerComponent {
           break
         case Operation.UPDATE:
           if (this.nodes.has(value.data.id)) {
-            let existingDoc = this.nodes.get(value.data.id)!
+            const existingDoc = this.nodes.get(value.data.id)!
             existingDoc.nodeTitle = value.data.title
             existingDoc.tracked = value.data.tracked
             existingDoc.stub = false
@@ -82,16 +82,16 @@ export class TreeDataManagerComponent {
 
   // Fired when the user makes a selection in GraphDataSelector
   dropDownSelect(doc: GraphDocument) {
-    for (let graphDoc of this.nodes.values()) {
+    for (const graphDoc of this.nodes.values()) {
       graphDoc.clearTreeNodes()
     }
     this.graphDataService.getLinks(doc.nodeId).subscribe((value) => {
-      let link = value.data
+      const link = value.data
       switch (value.operation) {
         case Operation.CREATE:
           if (value.data.toDoc !== value.data.fromDoc) {
-            let fromDoc = this.nodes.getOrSetDefaultDefer(link.fromDoc, () => new GraphDocument(link.fromDoc, '', false, new Set(), true))
-            let toDoc = this.nodes.getOrSetDefaultDefer(link.toDoc, () => new GraphDocument(link.toDoc, '', false, new Set(), true))
+            const fromDoc = this.nodes.getOrSetDefaultDefer(link.fromDoc, () => new GraphDocument(link.fromDoc, '', false, new Set(), true))
+            const toDoc = this.nodes.getOrSetDefaultDefer(link.toDoc, () => new GraphDocument(link.toDoc, '', false, new Set(), true))
             fromDoc.linksTo.add(toDoc)
             this.displayComponent.informRebuildRequired(fromDoc)
           }
@@ -103,18 +103,18 @@ export class TreeDataManagerComponent {
           }
       }
     })
-    let newTreeNode =  new TreeNode(doc)
+    const newTreeNode =  new TreeNode(doc)
     this.displayComponent.rootNode = newTreeNode
   }
 
   nodeExpanded(node: TreeNode) {
     this.graphDataService.getLinks(node.graphDocument.nodeId).subscribe((value) => {
-      let link = value.data
+      const link = value.data
       switch (value.operation) {
         case Operation.CREATE:
           if (value.data.toDoc !== value.data.fromDoc) {
-            let fromDoc = this.nodes.getOrSetDefaultDefer(link.fromDoc, () => new GraphDocument(link.fromDoc, '', false, new Set(), true))
-            let toDoc = this.nodes.getOrSetDefaultDefer(link.toDoc, () => new GraphDocument(link.toDoc, '', false, new Set(), true))
+            const fromDoc = this.nodes.getOrSetDefaultDefer(link.fromDoc, () => new GraphDocument(link.fromDoc, '', false, new Set(), true))
+            const toDoc = this.nodes.getOrSetDefaultDefer(link.toDoc, () => new GraphDocument(link.toDoc, '', false, new Set(), true))
             fromDoc.linksTo.add(toDoc)
             this.displayComponent.informRebuildRequired(fromDoc)
           }

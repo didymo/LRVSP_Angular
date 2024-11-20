@@ -4,9 +4,9 @@ import * as d3 from "d3"
 
 export class TreeNode {
   readonly graphDocument: GraphDocument;
-  private _children: Set<TreeNode> = new Set();
-  private _expanded: boolean = false;
-  private _hover: boolean = false;
+  private _children = new Set<TreeNode>();
+  private _expanded = false;
+  private _hover = false;
   hierarchy: d3.HierarchyNode<TreeNode> | undefined
   private hoverColour: Color = d3.rgb(255, 0, 0);
   private pathColour: Color = d3.rgb(255, 255, 0);

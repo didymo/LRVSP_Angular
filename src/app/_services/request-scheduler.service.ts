@@ -11,15 +11,15 @@ export class RequestSchedulerService {
   private queuedRequests: ScheduledRequest<any>[] = []
   private handledRequests: ScheduledRequest<any>[] = []
   private rejectedRequests: ScheduledRequest<any>[] = []
-  private registeredRequests: DefaultableMap<URL, ScheduledRequest<any>> = new DefaultableMap();
-  private _activeRequestCount: number = 0
+  private registeredRequests = new DefaultableMap<URL, ScheduledRequest<any>>();
+  private _activeRequestCount = 0
   private get activeRequestCount() {
     return this._activeRequestCount
   }
   private set activeRequestCount(newval: number) {
-    let was = this._activeRequestCount
+    const was = this._activeRequestCount
     this._activeRequestCount = newval
-    let now = this._activeRequestCount
+    const now = this._activeRequestCount
     if (was >= environment.requestScheduler.maxActiveRequests && now < environment.requestScheduler.maxActiveRequests) {
       setTimeout(this.requestHandlerTick.bind(this), 0)
     }
@@ -34,7 +34,7 @@ export class RequestSchedulerService {
   }
 
   public registerRequest<T>(url: URL, repeat: boolean): Observable<T> {
-    let request = this.registeredRequests.getOrSetDefault(url, {
+    const request = this.registeredRequests.getOrSetDefault(url, {
       url: url,
       repeat: repeat,
       fresh: true,
@@ -62,7 +62,7 @@ export class RequestSchedulerService {
     this.activeRequestCount++
     request.lastRun = Date.now()
 
-    let saltedUrl = new URL(request.url)
+    const saltedUrl = new URL(request.url)
     saltedUrl.searchParams.set("randomSalt", Math.random().toString())
 
     this.httpClient.get(saltedUrl.toString()).pipe(
@@ -82,8 +82,8 @@ export class RequestSchedulerService {
 
     //While we have slots available, and also have requests left to process, try to process requests
     while (this.activeRequestCount < environment.requestScheduler.maxActiveRequests && this.queuedRequests.length > 0) {
-      let request = this.queuedRequests.shift()!;
-      let runDelta = Date.now() - request.lastRun;
+      const request = this.queuedRequests.shift()!;
+      const runDelta = Date.now() - request.lastRun;
       // console.log(request.fresh, runDelta)
       if (!request.fresh && runDelta < environment.requestScheduler.minimumRequestTimeDelta * 1000) {
 	      // console.log("Rejected request: ", request)

@@ -1,4 +1,4 @@
-import {Component, forwardRef, Injector, Input} from '@angular/core';
+import {Component, forwardRef, Injector, Input, OnInit} from '@angular/core';
 import {MatIcon} from "@angular/material/icon";
 import {
   AbstractControl,
@@ -34,9 +34,9 @@ import {MatDivider} from "@angular/material/divider";
     }
   ]
 })
-export class ReactiveFileInputComponent implements ControlValueAccessor{
+export class ReactiveFileInputComponent implements ControlValueAccessor, OnInit{
   @Input({required: true}) labelText!: string;
-  @Input() allowedFileTypes: String[] = [];
+  @Input() allowedFileTypes: string[] = [];
 
   protected fileTypeViolate?: {value: any};
 
@@ -46,13 +46,13 @@ export class ReactiveFileInputComponent implements ControlValueAccessor{
   private formControl?: FormControl;
   protected _onChangeFn?: (value:any) => {};
   protected _onTouchFn?: (value:any) => {};
-  protected isDisabled: boolean = false;
+  protected isDisabled = false;
   value: File | null = null;
 
   constructor(private injector: Injector) {}
 
   ngOnInit() {
-    let injectedControl = this.injector.get(NgControl, undefined,  {optional: true})
+    const injectedControl = this.injector.get(NgControl, undefined,  {optional: true})
     if (injectedControl instanceof FormControlName) {
       this.formControl = this.injector.get(FormGroupDirective).getControl(injectedControl);
     } else if (injectedControl instanceof FormControlDirective) {
@@ -91,7 +91,7 @@ export class ReactiveFileInputComponent implements ControlValueAccessor{
       if (this._onChangeFn) {
         this._onChangeFn(this.value)
       }
-      let validationResult = this.formControl.validator(this.formControl)
+      const validationResult = this.formControl.validator(this.formControl)
       if (validationResult !== null) {
         this.fileSizeViolate = validationResult['forbiddenFileSize']
         this.fileTypeViolate = validationResult['forbiddenMIMEType']
@@ -124,7 +124,7 @@ export class ReactiveFileInputComponent implements ControlValueAccessor{
     event.preventDefault()
     if (event.target instanceof HTMLElement && event.dataTransfer !== null) {
       if (event.dataTransfer.items instanceof DataTransferItemList) {
-        let filteredItems = Array.from(event.dataTransfer.items)
+        const filteredItems = Array.from(event.dataTransfer.items)
           .filter((item) => item.kind === 'file')
         if (filteredItems.length > 0) {
           this.internalSetValue(filteredItems[0].getAsFile())

@@ -34,7 +34,7 @@ import {RouterLink, RouterOutlet} from "@angular/router";
   styleUrl: './file-management.component.scss'
 })
 export class FileManagementComponent {
-  protected docs: DefaultableMap<string, DrupalDoc> = new DefaultableMap()
+  protected docs = new DefaultableMap<string, DrupalDoc>()
 
   constructor(private graphDataService: GraphDataService) {
     graphDataService.getDocs().subscribe(

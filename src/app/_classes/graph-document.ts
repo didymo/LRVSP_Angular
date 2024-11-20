@@ -7,7 +7,7 @@ export class GraphDocument {
   linksTo: Set<GraphDocument>;
   stub: boolean
   //TODO: Change back to private
-  public treeNodes: Set<TreeNode> = new Set()
+  public treeNodes = new Set<TreeNode>()
 
   constructor(nodeId: string, nodeTitle: string, tracked?: boolean, linksTo?: Set<GraphDocument>, stub?: boolean) {
     this.nodeId = nodeId;

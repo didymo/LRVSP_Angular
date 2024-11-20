@@ -56,7 +56,7 @@ export class HomeComponent {
   private filterVal!: string | null
   protected _selectedValue: DrupalDoc | undefined
 
-  options: DefaultableMap<string, DrupalDoc> = new DefaultableMap()
+  options = new DefaultableMap<string, DrupalDoc>()
 
   constructor(private graphData: GraphDataService, protected router: Router, protected auth: AuthService) {
     this.formControl.valueChanges.subscribe((val) => {
