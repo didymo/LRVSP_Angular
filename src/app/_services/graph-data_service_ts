@@ -1,0 +1,164 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Observable, Subject, map, shareReplay, catchError } from "rxjs";
+import { environment } from '../../environments/environment';
+import { Operation } from "../_enums/opperation";
+import { DataOperation } from "../_interfaces/data-operation";
+
+interface CacheStore<T> {
+  data: Map<string, T>;
+  subject: Subject<DataOperation<T>>;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class GraphDataService {
+  private readonly API_URL = environment.apiUrl;
+  private readonly ENDPOINTS = environment.apiEndpoints;
+  
+  // Centralized cache store
+  private cache: {
+    documents: CacheStore<DrupalDoc>;
+    links: Map<string, CacheStore<DrupalLink>>;
+  };
+
+  constructor(
+    private readonly http: HttpClient,
+    private readonly requestScheduler: RequestSchedulerService
+  ) {
+    this.initializeCache();
+    this.initializeDocumentPolling();
+  }
+
+  // Public methods with clear return types
+  getDocs(): Observable<DataOperation<DrupalDoc>> {
+    return this.getFromCache(
+      this.cache.documents,
+      () => this.fetchDocs()
+    );
+  }
+
+  getLinks(docId: string): Observable<DataOperation<DrupalLink>> {
+    if (!this.cache.links.has(docId)) {
+      this.cache.links.set(docId, this.createCacheStore<DrupalLink>());
+    }
+    
+    return this.getFromCache(
+      this.cache.links.get(docId)!,
+      () => this.fetchLinks(docId)
+    ).pipe(
+      shareReplay(1) // Share the subscription between multiple subscribers
+    );
+  }
+
+  getDocDetails(docId: string): Observable<DrupalDocDetails> {
+    return this.http.get<DrupalDocDetails>(
+      `${this.API_URL}/${this.ENDPOINTS.docDetails}/${docId}`
+    ).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  uploadFile(file: File, type: 'pdf' | 'processFile'): Observable<DrupalFileUploadResponse> {
+    const headers = new HttpHeaders()
+      .set('Content-Type', 'application/octet-stream')
+      .set('Content-Disposition', `filename="${file.name}"`);
+
+    const endpoint = type === 'pdf' ? 'pdf' : 'processFile';
+    const url = `${this.API_URL}/${this.ENDPOINTS.fileUpload}/lrvsp_docfile/_/${endpoint}`;
+
+    return this.http.post<DrupalFileUploadResponse>(url, file, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
+  createDocFile(pdfId: number, processingId: number | null): Observable<any> {
+    return this.http.post(
+      `${this.API_URL}/${this.ENDPOINTS.createDocfile}`,
+      { pdfId, processId: processingId }
+    ).pipe(catchError(this.handleError));
+  }
+
+  // Private helper methods
+  private initializeCache(): void {
+    this.cache = {
+      documents: this.createCacheStore<DrupalDoc>(),
+      links: new Map()
+    };
+  }
+
+  private createCacheStore<T>(): CacheStore<T> {
+    return {
+      data: new Map<string, T>(),
+      subject: new Subject<DataOperation<T>>()
+    };
+  }
+
+  private initializeDocumentPolling(): void {
+    const url = new URL(this.ENDPOINTS.allDocs, this.API_URL);
+    
+    this.requestScheduler.registerRequest<DrupalDoc[]>(url, true)
+      .pipe(
+        map(docs => this.updateDocumentCache(docs)),
+        catchError(this.handleError)
+      )
+      .subscribe();
+  }
+
+  private updateDocumentCache(docs: DrupalDoc[]): void {
+    // Handle deletions
+    for (const [key, doc] of this.cache.documents.data.entries()) {
+      if (!docs.some(newDoc => newDoc.id === key)) {
+        this.emitOperation(this.cache.documents, Operation.DELETE, doc);
+        this.cache.documents.data.delete(key);
+      }
+    }
+
+    // Handle updates and creations
+    for (const doc of docs) {
+      doc.title = this.decodeBase64UTF8(doc.title);
+      const cached = this.cache.documents.data.get(doc.id);
+
+      if (!cached) {
+        this.emitOperation(this.cache.documents, Operation.CREATE, doc);
+      } else if (!this.deepEquals(cached, doc)) {
+        this.emitOperation(this.cache.documents, Operation.UPDATE, doc);
+      }
+      
+      this.cache.documents.data.set(doc.id, doc);
+    }
+  }
+
+  private emitOperation<T>(
+    store: CacheStore<T>, 
+    operation: Operation, 
+    data: T
+  ): void {
+    store.subject.next({ operation, data });
+  }
+
+  private decodeBase64UTF8(b64String: string): string {
+    const binString = atob(b64String);
+    const bytes = Uint8Array.from(binString, m => m.codePointAt(0)!);
+    return new TextDecoder().encode(bytes);
+  }
+
+  private handleError(error: any): Observable<never> {
+    console.error('An error occurred:', error);
+    throw error;
+  }
+
+  private deepEquals(obj1: any, obj2: any): boolean {
+    if (obj1 === obj2) return true;
+    if (!obj1 || !obj2 || typeof obj1 !== 'object' || typeof obj2 !== 'object') return false;
+    
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+    
+    if (keys1.length !== keys2.length) return false;
+    
+    return keys1.every(key => 
+      this.deepEquals(obj1[key], obj2[key])
+    );
+  }
+}
